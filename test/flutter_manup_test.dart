@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_manup/flutter_manup.dart';
+import 'package:mandatory_update/mandatory_update.dart';
 
 void main() {
   test('adds one to input values', () {

@@ -1,4 +1,4 @@
-name: flutter_manup
+name: mandatory_update
 description: Mandatory update for Flutter Apps.
 version: 0.0.1
 author: Michael Marner <mmarner@nextfaze.com>
@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  package_info: ^0.3.2
+  pub_semver: ^1.4.2
 
 dev_dependencies:
   flutter_test:
