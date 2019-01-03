@@ -1,14 +1,14 @@
 part of mandatory_update;
 
 class ManUpService {
-  final MetadataProvider metadata;
+  final String url;
   final PackageInfoProvider packageInfoProvider;
 
-  ManUpService(this.metadata, {this.packageInfoProvider = const DefaultPackageInfoProvider()});
+  ManUpService(this.url, {this.packageInfoProvider = const DefaultPackageInfoProvider()});
 
   Future<ManUpStatus> checkVersion() async {
     PackageInfo info = await this.packageInfoProvider.getInfo();
-    Metadata manupData = await this.metadata.getMetadata();
+    Metadata manupData = await this.getMetadata();
 
     PlatformData platformData = (Platform.isIOS) ? manupData.ios : manupData.android;
 
@@ -27,4 +27,6 @@ class ManUpService {
     }
     return ManUpStatus.unsupported;
   }
+
+  Future<Metadata> getMetadata() {}
 }
