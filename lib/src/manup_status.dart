@@ -12,5 +12,5 @@ enum ManUpStatus {
   unsupported,
 
   /// The app has been disabled for some reason
-  disabled
+  disabled,
 }

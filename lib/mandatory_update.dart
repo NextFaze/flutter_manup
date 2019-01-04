@@ -2,8 +2,11 @@ library mandatory_update;
 
 import 'package:package_info/package_info.dart';
 import 'package:pub_semver/pub_semver.dart';
+import 'package:http/http.dart';
 import 'dart:io';
+import 'dart:convert';
 
+part 'src/exception.dart';
 part 'src/metadata.dart';
 part 'src/metadata_provider.dart';
 part 'src/manup_status.dart';

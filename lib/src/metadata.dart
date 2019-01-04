@@ -3,11 +3,11 @@ part of mandatory_update;
 /// Version information for a particular platform
 class PlatformData {
   final String minVersion;
-  final String maxVersion;
+  final String latestVersion;
   final bool enabled;
   final String updateUrl;
 
-  PlatformData({this.minVersion, this.maxVersion, this.enabled, this.updateUrl});
+  PlatformData({this.minVersion, this.latestVersion, this.enabled, this.updateUrl});
 }
 
 /// Version information
