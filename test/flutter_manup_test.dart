@@ -231,16 +231,6 @@ void main() {
         var packageInfo = MockPackageInfo("2.4.1");
         OSGetter os = () => 'ios';
         var client = MockClient();
-        var response = http.Response('''
-          {
-            "ios": {
-              "latest": "2.4.1",
-              "minimum": "2.1.0",
-              "url": "http://example.com/myAppUpdate",
-              "enabled": true 
-            }
-          }
-          ''', 200);
         when(client.get("https://example.com/manup.json")).thenThrow(Exception('test error'));
 
         var service = ManUpService('https://example.com/manup.json',

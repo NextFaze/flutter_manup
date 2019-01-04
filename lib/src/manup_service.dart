@@ -39,6 +39,7 @@ class ManUpService {
     }
   }
 
+  @visibleForTesting
   PlatformData getPlatformData(String os, Metadata data) {
     if (os == 'ios') {
       return data.ios;
@@ -48,6 +49,7 @@ class ManUpService {
     throw ManUpException('Platform not supported');
   }
 
+  @visibleForTesting
   Future<Metadata> getMetadata() async {
     try {
       var data = await this.http.get(this.url);
@@ -68,6 +70,7 @@ class ManUpService {
     }
   }
 
+  @visibleForTesting
   PlatformData parseJson(Map<String, dynamic> data) {
     return PlatformData(
         enabled: data['enabled'],
