@@ -5,7 +5,7 @@ author: Michael Marner <mmarner@nextfaze.com>
 homepage: https://github.com/NextFaze/flutter_manup
 
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: '>=2.0.0 <3.0.0'
 
 dependencies:
   flutter:
