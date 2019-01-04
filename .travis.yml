@@ -11,7 +11,7 @@ addons:
 before_script:
   - gem install coveralls-lcov
   - git clone https://github.com/flutter/flutter.git -b beta --depth 1 .flutter
-  - ./flutter/bin/flutter doctor
+  - ./.flutter/bin/flutter doctor
 
 script:
   - ./.flutter/bin/flutter analyze
