@@ -10,13 +10,12 @@ addons:
       - fonts-droid
 before_script:
   - gem install coveralls-lcov
-  - git clone https://github.com/flutter/flutter.git -b beta --depth 1
+  - git clone https://github.com/flutter/flutter.git -b beta --depth 1 .flutter
   - ./flutter/bin/flutter doctor
-  - cd project
 
 script:
-  - ./flutter/bin/flutter analyze
-  - ./flutter/bin/flutter test --coverage
+  - ./.flutter/bin/flutter analyze
+  - ./.flutter/bin/flutter test --coverage
 after_success:
   - coveralls-lcov coverage/lcov.info
 env:
