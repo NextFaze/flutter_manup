@@ -1,5 +1,7 @@
 # Mandatory Update
 
+[![Build Status](https://travis-ci.org/NextFaze/flutter_manup.svg?branch=master)](https://travis-ci.org/NextFaze/flutter_manup) [![Coverage Status](https://coveralls.io/repos/github/NextFaze/flutter_manup/badge.svg?branch=master)](https://coveralls.io/github/NextFaze/flutter_manup?branch=master)
+
 Sometimes you have an app which talks to services in the cloud. Sometimes,
 those services change, and your app no longer works. Wouldn't it be great if
 the app could let the user know there's an update? That's what this module
