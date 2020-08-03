@@ -32,8 +32,7 @@ void main() {
     "enabled": true
   }''');
 
-      ManUpService service = ManUpService('https://example.com/manup.json');
-      var data = service.parseJson(json);
+      var data = PlatformData.fromData(json);
       expect(data.enabled, true);
       expect(data.latestVersion, "2.4.1");
       expect(data.minVersion, "2.1.0");
@@ -76,6 +75,42 @@ void main() {
         expect(metadata.android.minVersion, "1.9.0");
         expect(metadata.android.updateUrl,
             "http://example.com/myAppUpdate/android");
+      });
+
+      test('Read custom properties from configuration', () async {
+        var packageInfo = MockPackageInfo("1.1.0");
+        OSGetter os = () => 'ios';
+        var client = MockClient();
+        var response = http.Response('''
+          {
+            "ios": {
+              "latest": "2.4.1",
+              "minimum": "2.1.0",
+              "url": "http://example.com/myAppUpdate",
+              "enabled": true
+            },
+            "android": {
+              "latest": "2.5.1",
+              "minimum": "1.9.0",
+              "url": "http://example.com/myAppUpdate/android",
+              "enabled": false 
+            },
+            "api-base": "http://api.example.com/",
+            "number-of-coins": 12
+          }
+          ''', 200);
+        when(client.get("https://example.com/manup.json"))
+            .thenAnswer((Invocation i) => Future.value(response));
+        var service = ManUpService('https://example.com/manup.json',
+            http: client, packageInfoProvider: packageInfo, os: os);
+        await service.validate();
+        verify(client.get("https://example.com/manup.json")).called(1);
+
+        expect(service.setting<String>(key: "api-base"), "http://api.example.com/");
+        expect(service.setting<int>(key: "api-base"), null);
+
+        expect(service.setting<String>(key: "number-of-coins"), null);
+        expect(service.setting<int>(key: "number-of-coins"), 12);
       });
     });
 
