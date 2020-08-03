@@ -106,11 +106,13 @@ void main() {
         await service.validate();
         verify(client.get("https://example.com/manup.json")).called(1);
 
-        expect(service.setting<String>(key: "api-base"), "http://api.example.com/");
+        expect(service.setting<String>(key: "api-base"),
+            "http://api.example.com/");
         expect(service.setting<int>(key: "api-base"), null);
 
         expect(service.setting<String>(key: "number-of-coins"), null);
         expect(service.setting<int>(key: "number-of-coins"), 12);
+        expect(service.setting<int>(key: "number-of-coin"), null);
       });
     });
 
