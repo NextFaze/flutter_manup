@@ -1,4 +1,4 @@
-part of mandatory_update;
+part of manup;
 
 /// Possible ManUp Status
 enum ManUpStatus {
