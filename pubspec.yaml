@@ -1,9 +1,6 @@
-name: mandatory_update
+name: manup
 description: Mandatory update for Flutter Apps.
 version: 0.0.2
-author: 
-- Michael Marner <mmarner@nextfaze.com>
-- Shyam Parmar <sparmar@nextfaze.com>
 homepage: https://github.com/NextFaze/flutter_manup
 
 environment:
@@ -15,6 +12,7 @@ dependencies:
   package_info: ^0.3.2
   pub_semver: ^1.4.2
   http: ^0.12.0
+  meta: ^1.1.8
 
 dev_dependencies:
   flutter_test:
