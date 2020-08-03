@@ -5,7 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
-import 'package:mandatory_update/mandatory_update.dart';
+import 'package:manup/manup.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -16,7 +16,8 @@ class MockPackageInfo extends PackageInfoProvider {
   MockPackageInfo(this.version);
   @override
   Future<PackageInfo> getInfo() {
-    return Future.value(PackageInfo(appName: "Test App", version: this.version));
+    return Future.value(
+        PackageInfo(appName: "Test App", version: this.version));
   }
 }
 
@@ -60,7 +61,8 @@ void main() {
           ''', 200);
         when(client.get("https://example.com/manup.json"))
             .thenAnswer((Invocation i) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json', http: client);
+        var service =
+            ManUpService('https://example.com/manup.json', http: client);
         var metadata = await service.getMetadata();
         verify(client.get("https://example.com/manup.json")).called(1);
 
@@ -72,7 +74,8 @@ void main() {
         expect(metadata.android.enabled, false);
         expect(metadata.android.latestVersion, "2.5.1");
         expect(metadata.android.minVersion, "1.9.0");
-        expect(metadata.android.updateUrl, "http://example.com/myAppUpdate/android");
+        expect(metadata.android.updateUrl,
+            "http://example.com/myAppUpdate/android");
       });
     });
 
@@ -231,7 +234,8 @@ void main() {
         var packageInfo = MockPackageInfo("2.4.1");
         OSGetter os = () => 'ios';
         var client = MockClient();
-        when(client.get("https://example.com/manup.json")).thenThrow(Exception('test error'));
+        when(client.get("https://example.com/manup.json"))
+            .thenThrow(Exception('test error'));
 
         var service = ManUpService('https://example.com/manup.json',
             http: client, packageInfoProvider: packageInfo, os: os);
