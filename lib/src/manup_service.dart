@@ -47,6 +47,9 @@ class ManUpService {
   }
 
   @visibleForTesting
+  T setting<T>({String key}) => _manupData?.setting(key: key) ?? null;
+
+  @visibleForTesting
   PlatformData getPlatformData(String os, Metadata data) {
     if (data == null) {
       throw ManUpException('No data, validate must be called first.');
@@ -64,28 +67,11 @@ class ManUpService {
     try {
       var data = await this.http.get(this.url);
       this.http.close();
-      PlatformData ios;
-      PlatformData android;
+      
       Map<String, dynamic> json = jsonDecode(data.body);
-
-      if (json['ios'] != null) {
-        ios = this.parseJson(json['ios']);
-      }
-      if (json['android'] != null) {
-        android = this.parseJson(json['android']);
-      }
-      return Metadata(android: android, ios: ios);
+      return Metadata(data: json);
     } catch (exception) {
       throw ManUpException(exception.toString());
     }
-  }
-
-  @visibleForTesting
-  PlatformData parseJson(Map<String, dynamic> data) {
-    return PlatformData(
-        enabled: data['enabled'],
-        latestVersion: data['latest'],
-        minVersion: data['minimum'],
-        updateUrl: data['url']);
   }
 }
