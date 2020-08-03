@@ -1,4 +1,4 @@
-part of mandatory_update;
+part of manup;
 
 /// Version information for a particular platform
 class PlatformData {
@@ -14,7 +14,8 @@ class PlatformData {
   /// The URL for update information (eg app store url)
   final String updateUrl;
 
-  PlatformData({this.minVersion, this.latestVersion, this.enabled, this.updateUrl});
+  PlatformData(
+      {this.minVersion, this.latestVersion, this.enabled, this.updateUrl});
 }
 
 /// Version information extracted from the JSON file

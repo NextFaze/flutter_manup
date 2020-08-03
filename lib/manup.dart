@@ -1,4 +1,4 @@
-library mandatory_update;
+library manup;
 
 import 'package:package_info/package_info.dart';
 import 'package:pub_semver/pub_semver.dart';

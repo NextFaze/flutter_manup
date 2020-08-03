@@ -1,4 +1,4 @@
-part of mandatory_update;
+part of manup;
 
 abstract class PackageInfoProvider {
   const PackageInfoProvider();

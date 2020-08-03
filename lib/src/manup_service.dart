@@ -1,4 +1,4 @@
-part of mandatory_update;
+part of manup;
 
 /// A Function that should return the current operating system
 typedef OSGetter = String Function();
