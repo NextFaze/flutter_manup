@@ -11,19 +11,22 @@ class ManupAppDialog {
         barrierDismissible: barrierDismissible,
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(message),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(falseText),
-                onPressed: () => Navigator.of(context).pop(false),
-              ),
-              FlatButton(
-                child: Text(trueText,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                onPressed: () => Navigator.of(context).pop(true),
-              )
-            ],
+          return WillPopScope(
+            onWillPop: () => Future.value(false),
+            child: AlertDialog(
+              title: Text(message),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(falseText),
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
+                FlatButton(
+                  child: Text(trueText,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  onPressed: () => Navigator.of(context).pop(true),
+                )
+              ],
+            ),
           );
         });
   }
@@ -37,15 +40,18 @@ class ManupAppDialog {
         barrierDismissible: barrierDismissible,
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(message),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(trueText,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                onPressed: () => Navigator.of(context).pop(true),
-              )
-            ],
+          return WillPopScope(
+            onWillPop: () => Future.value(false),
+            child: AlertDialog(
+              title: Text(message),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(trueText,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  onPressed: () => Navigator.of(context).pop(true),
+                )
+              ],
+            ),
           );
         });
   }
