@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import '../manup_delegate.dart';
+part of manup;
 
 /// Default implemetation of [ManupDelegate], just override `appContext` to show app alerts.
 mixin ManupDelegateMixin on ManupDelegate {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of manup;
 
 /// `ManupDelegate` class has required methods.
 /// Need  `appContext` and `shouldShowAlert` to show dialog.

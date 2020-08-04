@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of manup;
 
 class ManupAppDialog {
   Future<bool> showConfirmDialog(

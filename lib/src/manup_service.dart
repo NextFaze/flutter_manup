@@ -13,7 +13,7 @@ class ManUpService with DialogMixin {
   Metadata _manupData;
   // read platform data
   PlatformData get configData => this.getPlatformData(os(), _manupData);
-  final ManupDelegate delegate;
+  ManupDelegate delegate;
 
   ///
   ManUpService(this.url,
@@ -109,6 +109,8 @@ class ManUpService with DialogMixin {
     if (context != null && this?.delegate?.shouldShowManupAlert == true) {
       showManupDialog(context, status, this).then((isDone) =>
           isDone ? this.delegate?.manUpFinishedValidation?.call() : "");
+    } else {
+      this.delegate?.manUpFinishedValidation?.call();
     }
   }
 }
