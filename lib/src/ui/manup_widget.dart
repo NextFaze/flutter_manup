@@ -40,10 +40,12 @@ class _ManUpWidgetState extends State<ManUpWidget>
       this?.widget?.shouldShowAlert?.call() ?? true;
   @override
   void manUpFinishedValidation() => this.widget?.onComplete?.call(true);
+  @override
+  http.Client get httpClient => http.Client();
 //
   @override
   void dispose() {
-    widget.service.delegate = null;
+    widget.service.close();
     super.dispose();
   }
 }
