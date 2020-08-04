@@ -114,7 +114,7 @@ mixin DialogMixin {
   Future<bool> showManupDialog(
       BuildContext context, ManUpStatus status, ManUpService service) async {
     ManupAppDialog _dialog = ManupAppDialog();
-    Metadata metadata = await service.getMetadata();
+    Metadata metadata = service._manupData;
     switch (status) {
       case ManUpStatus.latest:
         return Future.value(true);
