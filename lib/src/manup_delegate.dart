@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 /// Other methods are optional.
 /// Default implemetation is in `ManupDelegateMixin` file.
 abstract class ManupDelegate {
-  BuildContext appContext();
-  bool shouldShowAlert();
+  BuildContext get appContext => null;
+  bool get shouldShowManupAlert;
   // informative
   void manUpConfigUpdateStarting();
   void manUpUpdateRequired();
   void manUpUpdateAvailable();
   void manUpMaintenanceMode();
+  void manUpFinishedValidation();
 }

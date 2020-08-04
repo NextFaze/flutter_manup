@@ -90,6 +90,9 @@ class ManUpService with DialogMixin {
   // manup status validation
   _handleManUpStatus(ManUpStatus status) {
     switch (status) {
+      case ManUpStatus.latest:
+        this.delegate?.manUpFinishedValidation?.call();
+        return;
       case ManUpStatus.supported:
         this.delegate?.manUpUpdateAvailable?.call();
         break;
@@ -102,9 +105,10 @@ class ManUpService with DialogMixin {
       default:
         return;
     }
-    BuildContext context = this?.delegate?.appContext?.call();
-    if (context != null && this?.delegate?.shouldShowAlert?.call() == true) {
-      showManupDialog(context, status, this);
+    BuildContext context = this?.delegate?.appContext;
+    if (context != null && this?.delegate?.shouldShowManupAlert == true) {
+      showManupDialog(context, status, this).then((isDone) =>
+          isDone ? this.delegate?.manUpFinishedValidation?.call() : "");
     }
   }
 }
