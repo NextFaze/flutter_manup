@@ -1,5 +1,6 @@
 library manup;
 
+import 'package:flutter/material.dart';
 import 'package:manup/src/ui/manup_app_dialog.dart';
 import 'package:manup/src/manup_delegate.dart';
 import 'package:package_info/package_info.dart';

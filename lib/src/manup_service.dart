@@ -3,7 +3,7 @@ part of manup;
 /// A Function that should return the current operating system
 typedef OSGetter = String Function();
 
-class ManUpService {
+class ManUpService with DialogMixin {
   final String url;
   final PackageInfoProvider packageInfoProvider;
   Client http;
@@ -102,42 +102,53 @@ class ManUpService {
       default:
         return;
     }
-    var context = this?.delegate?.appContext?.call();
-    if (context == null) {
-      return;
+    BuildContext context = this?.delegate?.appContext?.call();
+    if (context != null && this?.delegate?.shouldShowAlert?.call() == true) {
+      showManupDialog(context, status, this);
     }
+  }
+}
+
+// Show app dialog based on manup status
+mixin DialogMixin {
+  Future<bool> showManupDialog(
+      BuildContext context, ManUpStatus status, ManUpService service) async {
     ManupAppDialog _dialog = ManupAppDialog();
+    Metadata metadata = await service.getMetadata();
     switch (status) {
+      case ManUpStatus.latest:
+        return Future.value(true);
       case ManUpStatus.supported:
-        _dialog
+        var launchUrl = service.configData.updateUrl;
+        return _dialog
             .showConfirmDialog(
                 context: context,
-                message: _manupData.setting(key: ""),
+                message: metadata.supportedMessage,
                 trueText: "Update",
                 falseText: "Later")
-            .then((shouldUpdate) => shouldUpdate ? canLaunch(url) : false)
-            .then((canLaunch) => canLaunch ? launch(url) : "");
-
-        break;
+            .then((shouldUpdate) => shouldUpdate ? canLaunch(launchUrl) : false)
+            .then((canLaunch) => canLaunch ? launch(launchUrl) : false)
+            .then((isLaunched) => !isLaunched);
       case ManUpStatus.unsupported:
-        _dialog
+        var launchUrl = service.configData.updateUrl;
+        return _dialog
             .showErrorDialog(
                 context: context,
-                message: _manupData.setting(key: ""),
+                message: metadata.unsupportedMessage,
                 trueText: "Update")
-            .then((_) => canLaunch(url))
-            .then((canLaunch) => canLaunch ? launch(url) : "");
-        break;
+            .then((_) => canLaunch(launchUrl))
+            .then((canLaunch) => canLaunch ? launch(launchUrl) : "")
+            .then((_) => false);
+
       case ManUpStatus.disabled:
-        _dialog
+        return _dialog
             .showErrorDialog(
                 context: context,
-                message: _manupData.setting(key: ""),
+                message: metadata.disabledMessage,
                 trueText: "Retry")
-            .then((shouldRetry) => shouldRetry ? this.validate() : "");
-        break;
-      default:
-        break;
+            .then((shouldRetry) => shouldRetry ? service.validate() : "")
+            .then((_) => false);
     }
+    throw ManUpException("Unknown manup status");
   }
 }
