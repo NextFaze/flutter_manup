@@ -5,8 +5,12 @@ part of manup;
 /// Other methods are optional.
 /// Default implemetation is in `ManupDelegateMixin` file.
 abstract class ManupDelegate {
-  BuildContext get appContext => null;
+  // required
+  BuildContext get appContext;
+  http.Client get httpClient;
+  // optionals
   bool get shouldShowManupAlert;
+  String get operatingSystem;
   // informative
   void manUpConfigUpdateStarting();
   void manUpUpdateRequired();

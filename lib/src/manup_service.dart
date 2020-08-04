@@ -1,25 +1,18 @@
 part of manup;
 
-/// A Function that should return the current operating system
-typedef OSGetter = String Function();
-
 class ManUpService with DialogMixin {
   final String url;
   final PackageInfoProvider packageInfoProvider;
-  Client http;
-  // allow overriding of how we get the operating system
-  // for testing purposes
-  OSGetter os;
+
+  String get os => this.delegate.operatingSystem;
   Metadata _manupData;
   // read platform data
-  PlatformData get configData => this.getPlatformData(os(), _manupData);
+  PlatformData get configData => this.getPlatformData(os, _manupData);
   ManupDelegate delegate;
 
   ///
   ManUpService(this.url,
       {this.packageInfoProvider = const DefaultPackageInfoProvider(),
-      this.http,
-      this.os,
       this.delegate});
 
   Future<ManUpStatus> validate() async {
@@ -78,8 +71,9 @@ class ManUpService with DialogMixin {
   @visibleForTesting
   Future<Metadata> getMetadata() async {
     try {
-      var data = await this.http.get(this.url);
-      this.http.close();
+      var client = this.delegate.httpClient;
+      var data = await client.get(this.url);
+      client.close();
       Map<String, dynamic> json = jsonDecode(data.body);
       return Metadata(data: json);
     } catch (exception) {
@@ -112,6 +106,11 @@ class ManUpService with DialogMixin {
     } else {
       this.delegate?.manUpFinishedValidation?.call();
     }
+  }
+
+  //
+  void close() {
+    this.delegate = null;
   }
 }
 
