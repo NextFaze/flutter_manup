@@ -3,13 +3,12 @@ import 'dart:convert';
 import 'package:package_info/package_info.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'dart:io';
 
 import 'package:manup/manup.dart';
 
 class MockClient extends Mock implements http.Client {}
 
-var osGetter = () => Platform.operatingSystem;
+var osGetter = () => "ios";
 
 class MockPackageInfo extends PackageInfoProvider {
   String version;
@@ -60,8 +59,8 @@ void main() {
           ''', 200);
         when(client.get("https://example.com/manup.json"))
             .thenAnswer((Invocation i) => Future.value(response));
-        var service =
-            ManUpService('https://example.com/manup.json', http: client);
+        var service = ManUpService('https://example.com/manup.json',
+            http: client, os: osGetter());
         var metadata = await service.getMetadata();
         verify(client.get("https://example.com/manup.json")).called(1);
 
@@ -79,7 +78,6 @@ void main() {
 
       test('Read custom properties from configuration', () async {
         var packageInfo = MockPackageInfo("1.1.0");
-        OSGetter os = () => 'ios';
         var client = MockClient();
         var response = http.Response('''
           {
@@ -102,22 +100,23 @@ void main() {
         when(client.get("https://example.com/manup.json"))
             .thenAnswer((Invocation i) => Future.value(response));
         var service = ManUpService('https://example.com/manup.json',
-            http: client, packageInfoProvider: packageInfo, os: os);
+            packageInfoProvider: packageInfo, http: client, os: osGetter());
         await service.validate();
         verify(client.get("https://example.com/manup.json")).called(1);
 
-        expect(service.setting<String>(key: "api-base"), "http://api.example.com/");
+        expect(service.setting<String>(key: "api-base"),
+            "http://api.example.com/");
         expect(service.setting<int>(key: "api-base"), null);
 
         expect(service.setting<String>(key: "number-of-coins"), null);
         expect(service.setting<int>(key: "number-of-coins"), 12);
+        expect(service.setting<int>(key: "number-of-coin"), null);
       });
     });
 
     group("validate", () {
       test('an unsupported version', () async {
         var packageInfo = MockPackageInfo("1.1.0");
-        OSGetter os = () => 'ios';
         var client = MockClient();
         var response = http.Response('''
           {
@@ -139,14 +138,13 @@ void main() {
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
-            http: client, packageInfoProvider: packageInfo, os: os);
+            packageInfoProvider: packageInfo, http: client, os: osGetter());
 
         var result = await service.validate();
         expect(result, ManUpStatus.unsupported);
       });
       test('the minimum version version', () async {
         var packageInfo = MockPackageInfo("2.1.0");
-        OSGetter os = () => 'ios';
         var client = MockClient();
         var response = http.Response('''
           {
@@ -168,14 +166,13 @@ void main() {
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
-            http: client, packageInfoProvider: packageInfo, os: os);
+            packageInfoProvider: packageInfo, http: client, os: osGetter());
 
         var result = await service.validate();
         expect(result, ManUpStatus.supported);
       });
       test('some supported version', () async {
         var packageInfo = MockPackageInfo("2.3.3");
-        OSGetter os = () => 'ios';
         var client = MockClient();
         var response = http.Response('''
           {
@@ -191,14 +188,13 @@ void main() {
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
-            http: client, packageInfoProvider: packageInfo, os: os);
+            packageInfoProvider: packageInfo, http: client, os: osGetter());
 
         var result = await service.validate();
         expect(result, ManUpStatus.supported);
       });
       test('the latest version', () async {
         var packageInfo = MockPackageInfo("2.4.1");
-        OSGetter os = () => 'ios';
         var client = MockClient();
         var response = http.Response('''
           {
@@ -214,14 +210,13 @@ void main() {
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
-            http: client, packageInfoProvider: packageInfo, os: os);
+            packageInfoProvider: packageInfo, http: client, os: osGetter());
 
         var result = await service.validate();
         expect(result, ManUpStatus.latest);
       });
       test('allow greater than latest version', () async {
         var packageInfo = MockPackageInfo("3.4.1");
-        OSGetter os = () => 'ios';
         var client = MockClient();
         var response = http.Response('''
           {
@@ -237,14 +232,13 @@ void main() {
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
-            http: client, packageInfoProvider: packageInfo, os: os);
+            packageInfoProvider: packageInfo, http: client, os: osGetter());
 
         var result = await service.validate();
         expect(result, ManUpStatus.latest);
       });
       test('marked as disabled', () async {
         var packageInfo = MockPackageInfo("2.4.1");
-        OSGetter os = () => 'ios';
         var client = MockClient();
         var response = http.Response('''
           {
@@ -260,20 +254,19 @@ void main() {
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
-            http: client, packageInfoProvider: packageInfo, os: os);
+            packageInfoProvider: packageInfo, http: client, os: osGetter());
 
         var result = await service.validate();
         expect(result, ManUpStatus.disabled);
       });
       test('throws an exception if the lookup failed', () async {
         var packageInfo = MockPackageInfo("2.4.1");
-        OSGetter os = () => 'ios';
         var client = MockClient();
         when(client.get("https://example.com/manup.json"))
             .thenThrow(Exception('test error'));
 
         var service = ManUpService('https://example.com/manup.json',
-            http: client, packageInfoProvider: packageInfo, os: os);
+            packageInfoProvider: packageInfo, http: client, os: osGetter());
 
         expect(() => service.validate(), throwsException);
       });

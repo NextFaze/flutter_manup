@@ -1,26 +1,36 @@
 part of manup;
 
-/// A Function that should return the current operating system
-typedef OSGetter = String Function();
-
 class ManUpService {
   final String url;
   final PackageInfoProvider packageInfoProvider;
-  Client http;
-  // allow overriding of how we get the operating system
-  // for testing purposes
-  OSGetter os;
+
+  String os;
   Metadata _manupData;
   // read platform data
-  PlatformData get configData => this.getPlatformData(os(), _manupData);
+  PlatformData get configData => this.getPlatformData(os, _manupData);
+  ManupDelegate delegate;
+
+  http.Client _client;
 
   ///
   ManUpService(this.url,
       {this.packageInfoProvider = const DefaultPackageInfoProvider(),
-      this.http,
-      this.os});
+      this.os,
+      http.Client http})
+      : _client = http;
 
   Future<ManUpStatus> validate() async {
+    delegate?.manUpConfigUpdateStarting?.call();
+    try {
+      ManUpStatus status = await _validate();
+      this._handleManUpStatus(status);
+      return status;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<ManUpStatus> _validate() async {
     PackageInfo info = await this.packageInfoProvider.getInfo();
     _manupData = await this.getMetadata();
 
@@ -65,13 +75,51 @@ class ManUpService {
   @visibleForTesting
   Future<Metadata> getMetadata() async {
     try {
-      var data = await this.http.get(this.url);
-      this.http.close();
-      
+      var data = await _client.get(this.url);
       Map<String, dynamic> json = jsonDecode(data.body);
       return Metadata(data: json);
     } catch (exception) {
       throw ManUpException(exception.toString());
     }
+  }
+
+  // manup status validation
+  _handleManUpStatus(ManUpStatus status) {
+    this.delegate?.manUpStatusChanged?.call(status);
+    switch (status) {
+      case ManUpStatus.supported:
+        this.delegate?.manUpUpdateAvailable?.call();
+        break;
+      case ManUpStatus.unsupported:
+        this.delegate?.manUpUpdateRequired?.call();
+        break;
+      case ManUpStatus.disabled:
+        this.delegate?.manUpMaintenanceMode?.call();
+        break;
+      default:
+        break;
+    }
+  }
+
+  String getMessage({ManUpStatus forStatus}) {
+    switch (forStatus) {
+      case ManUpStatus.supported:
+        return _manupData?.supportedMessage;
+      case ManUpStatus.unsupported:
+        return _manupData?.unsupportedMessage;
+        break;
+      case ManUpStatus.disabled:
+        return _manupData?.disabledMessage;
+        break;
+      default:
+        return "";
+    }
+  }
+
+  //call this on dispose.
+  void close() {
+    _client.close();
+    _client = null;
+    this.delegate = null;
   }
 }
