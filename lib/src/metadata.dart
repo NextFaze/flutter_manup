@@ -38,13 +38,29 @@ class Metadata {
   // Configuration file data
   final Map<String, dynamic> _data;
 
-  dynamic rawSetting({String key}) => _data.containsKey(key) ? _data[key] : null;
+  dynamic rawSetting({String key}) =>
+      _data.containsKey(key) ? _data[key] : null;
 
   T setting<T>({String key}) {
     var value = rawSetting(key: key);
     return value is T ? value : null;
   }
 
-  Metadata({Map<String, dynamic> data}) :
-    _data = data;
+  Metadata({Map<String, dynamic> data}) : _data = data;
+}
+
+// message extension
+extension MetaDataMessages on Metadata {
+  // version is supported but new update is available
+  String get supportedMessage =>
+      setting<String>(key: 'supportedMessage') ??
+      "There is an update available.";
+  // version is not supported, update required
+  String get unsupportedMessage =>
+      setting<String>(key: 'unsupportedMessage') ??
+      "This version is no longer supported. Please update to the latest version";
+  //maintenance mode
+  String get disabledMessage =>
+      setting<String>(key: 'disabledMessage') ??
+      "The app is currently in maintenance, please check again shortly";
 }
