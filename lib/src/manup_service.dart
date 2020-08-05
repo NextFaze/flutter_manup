@@ -4,16 +4,20 @@ class ManUpService with DialogMixin {
   final String url;
   final PackageInfoProvider packageInfoProvider;
 
-  String get os => this.delegate.operatingSystem;
+  String os;
   Metadata _manupData;
   // read platform data
   PlatformData get configData => this.getPlatformData(os, _manupData);
   ManupDelegate delegate;
 
+  http.Client _client;
+
   ///
   ManUpService(this.url,
       {this.packageInfoProvider = const DefaultPackageInfoProvider(),
-      this.delegate});
+      this.os,
+      http.Client http})
+      : _client = http;
 
   Future<ManUpStatus> validate() async {
     delegate?.manUpConfigUpdateStarting?.call();
@@ -71,9 +75,7 @@ class ManUpService with DialogMixin {
   @visibleForTesting
   Future<Metadata> getMetadata() async {
     try {
-      var client = this.delegate.httpClient;
-      var data = await client.get(this.url);
-      client.close();
+      var data = await _client.get(this.url);
       Map<String, dynamic> json = jsonDecode(data.body);
       return Metadata(data: json);
     } catch (exception) {
@@ -99,7 +101,7 @@ class ManUpService with DialogMixin {
       default:
         return;
     }
-    BuildContext context = this?.delegate?.appContext;
+    BuildContext context = this?.delegate?.buildContext;
     if (context != null && this?.delegate?.shouldShowManupAlert == true) {
       showManupDialog(
               context, status, this._manupData, this._launchUrl, this._retry)
@@ -120,6 +122,8 @@ class ManUpService with DialogMixin {
 
   //
   void close() {
+    _client.close();
+    _client = null;
     this.delegate = null;
   }
 }
@@ -138,7 +142,7 @@ mixin DialogMixin {
         return Future.value(true);
       case ManUpStatus.supported:
         return _dialog
-            .showConfirmDialog(
+            .showAlertDialog(
                 context: context,
                 message: metadata.supportedMessage,
                 trueText: "Update",
@@ -147,7 +151,7 @@ mixin DialogMixin {
             .then((isLaunched) => !isLaunched);
       case ManUpStatus.unsupported:
         return _dialog
-            .showErrorDialog(
+            .showAlertDialog(
                 context: context,
                 message: metadata.unsupportedMessage,
                 trueText: "Update")
@@ -156,7 +160,7 @@ mixin DialogMixin {
 
       case ManUpStatus.disabled:
         return _dialog
-            .showErrorDialog(
+            .showAlertDialog(
                 context: context,
                 message: metadata.disabledMessage,
                 trueText: "Retry")

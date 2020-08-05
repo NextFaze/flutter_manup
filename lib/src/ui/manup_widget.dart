@@ -34,14 +34,12 @@ class _ManUpWidgetState extends State<ManUpWidget>
 
   // man up delegate
   @override
-  BuildContext get appContext => context;
+  BuildContext get buildContext => context;
   @override
   bool get shouldShowManupAlert =>
       this?.widget?.shouldShowAlert?.call() ?? true;
   @override
   void manUpFinishedValidation() => this.widget?.onComplete?.call(true);
-  @override
-  http.Client get httpClient => http.Client();
 //
   @override
   void dispose() {
