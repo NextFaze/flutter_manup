@@ -6,7 +6,6 @@ class ManUpService {
 
   String os;
   Metadata _manupData;
-  Metadata get metaData => _manupData;
   // read platform data
   PlatformData get configData => this.getPlatformData(os, _manupData);
   ManupDelegate delegate;
