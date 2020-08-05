@@ -7,9 +7,9 @@ abstract class ManupDelegate {
   BuildContext get buildContext;
   bool get shouldShowManupAlert;
   // informative
+  void manUpStatusChanged(ManUpStatus status);
   void manUpConfigUpdateStarting();
   void manUpUpdateRequired();
   void manUpUpdateAvailable();
   void manUpMaintenanceMode();
-  void manUpFinishedValidation();
 }

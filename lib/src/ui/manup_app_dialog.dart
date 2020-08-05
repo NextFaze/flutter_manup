@@ -27,7 +27,7 @@ class ManupAppDialog {
                   child: Text(trueText,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   onPressed: () => Navigator.of(context).pop(true),
-                )
+                ),
               ],
             ),
           );

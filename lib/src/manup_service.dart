@@ -1,11 +1,12 @@
 part of manup;
 
-class ManUpService with DialogMixin {
+class ManUpService {
   final String url;
   final PackageInfoProvider packageInfoProvider;
 
   String os;
   Metadata _manupData;
+  Metadata get metaData => _manupData;
   // read platform data
   PlatformData get configData => this.getPlatformData(os, _manupData);
   ManupDelegate delegate;
@@ -85,10 +86,8 @@ class ManUpService with DialogMixin {
 
   // manup status validation
   _handleManUpStatus(ManUpStatus status) {
+    this.delegate?.manUpStatusChanged?.call(status);
     switch (status) {
-      case ManUpStatus.latest:
-        this.delegate?.manUpFinishedValidation?.call();
-        return;
       case ManUpStatus.supported:
         this.delegate?.manUpUpdateAvailable?.call();
         break;
@@ -99,74 +98,29 @@ class ManUpService with DialogMixin {
         this.delegate?.manUpMaintenanceMode?.call();
         break;
       default:
-        return;
-    }
-    BuildContext context = this?.delegate?.buildContext;
-    if (context != null && this?.delegate?.shouldShowManupAlert == true) {
-      showManupDialog(
-              context, status, this._manupData, this._launchUrl, this._retry)
-          .then((isDone) =>
-              isDone ? this.delegate?.manUpFinishedValidation?.call() : "");
-    } else {
-      this.delegate?.manUpFinishedValidation?.call();
+        break;
     }
   }
 
-  Future<bool> _launchUrl() {
-    var launchUrl = configData.updateUrl;
-    return canLaunch(launchUrl)
-        .then((canLaunch) => canLaunch ? launch(launchUrl) : false);
+  String getMessage({ManUpStatus forStatus}) {
+    switch (forStatus) {
+      case ManUpStatus.supported:
+        return _manupData?.supportedMessage;
+      case ManUpStatus.unsupported:
+        return _manupData?.unsupportedMessage;
+        break;
+      case ManUpStatus.disabled:
+        return _manupData?.disabledMessage;
+        break;
+      default:
+        return "";
+    }
   }
 
-  Future<ManUpStatus> _retry() => this.validate();
-
-  //
+  //call this on dispose.
   void close() {
     _client.close();
     _client = null;
     this.delegate = null;
-  }
-}
-
-// Show app dialog based on manup status
-mixin DialogMixin {
-  Future<bool> showManupDialog(
-      BuildContext context,
-      ManUpStatus status,
-      Metadata metadata,
-      Future<bool> launchUrl(),
-      Future<ManUpStatus> retry()) async {
-    ManupAppDialog _dialog = ManupAppDialog();
-    switch (status) {
-      case ManUpStatus.latest:
-        return Future.value(true);
-      case ManUpStatus.supported:
-        return _dialog
-            .showAlertDialog(
-                context: context,
-                message: metadata.supportedMessage,
-                trueText: "Update",
-                falseText: "Later")
-            .then((shouldUpdate) => shouldUpdate ? launchUrl.call() : false)
-            .then((isLaunched) => !isLaunched);
-      case ManUpStatus.unsupported:
-        return _dialog
-            .showAlertDialog(
-                context: context,
-                message: metadata.unsupportedMessage,
-                trueText: "Update")
-            .then((_) => launchUrl.call())
-            .then((_) => false);
-
-      case ManUpStatus.disabled:
-        return _dialog
-            .showAlertDialog(
-                context: context,
-                message: metadata.disabledMessage,
-                trueText: "Retry")
-            .then((shouldRetry) => shouldRetry ? retry.call() : "")
-            .then((_) => false);
-    }
-    throw ManUpException("Unknown manup status");
   }
 }

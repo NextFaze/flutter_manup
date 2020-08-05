@@ -6,9 +6,9 @@ mixin ManupDelegateMixin on ManupDelegate {
   BuildContext get buildContext => null;
   bool get shouldShowManupAlert => true;
   // informative
+  void manupStatusChanged(ManUpStatus status) {}
   void manUpConfigUpdateStarting() {}
   void manUpUpdateRequired() {}
   void manUpUpdateAvailable() {}
   void manUpMaintenanceMode() {}
-  void manUpFinishedValidation() {}
 }

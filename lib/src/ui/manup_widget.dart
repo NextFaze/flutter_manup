@@ -21,11 +21,17 @@ class ManUpWidget extends StatefulWidget {
 }
 
 class _ManUpWidgetState extends State<ManUpWidget>
-    with ManupDelegate, ManupDelegateMixin {
+    with ManupDelegate, ManupDelegateMixin, DialogMixin {
+  bool isshowingManupAlert = false;
+  //
   @override
   void initState() {
     super.initState();
     widget.service.delegate = this;
+    validateManup();
+  }
+
+  validateManup() {
     widget.service.validate().catchError((e) => widget?.onError(e));
   }
 
@@ -38,8 +44,24 @@ class _ManUpWidgetState extends State<ManUpWidget>
   @override
   bool get shouldShowManupAlert =>
       this?.widget?.shouldShowAlert?.call() ?? true;
+
   @override
-  void manUpFinishedValidation() => this.widget?.onComplete?.call(true);
+  void manUpStatusChanged(ManUpStatus status) {
+    if (status == ManUpStatus.latest) {
+      this.widget?.onComplete?.call(true);
+      return;
+    }
+    if (this.shouldShowManupAlert) {
+      isshowingManupAlert = true;
+      showManupDialog(status, widget.service.getMessage(forStatus: status),
+              widget.service.configData.updateUrl)
+          .then((isUpdateLater) => isUpdateLater
+              ? this.widget?.onComplete?.call(true)
+              : isUpdateLater)
+          .then((_) => isshowingManupAlert = false);
+    }
+  }
+
 //
   @override
   void dispose() {
