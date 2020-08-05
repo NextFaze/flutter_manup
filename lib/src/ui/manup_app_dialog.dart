@@ -7,7 +7,7 @@ class ManupAppDialog {
       String falseText,
       bool barrierDismissible = false,
       @required BuildContext context}) {
-    bool hasCancelText = falseText != null || falseText.isNotEmpty;
+    bool hasCancelText = falseText != null && falseText.isNotEmpty;
     return showDialog(
         barrierDismissible: barrierDismissible,
         context: context,
