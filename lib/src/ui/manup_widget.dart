@@ -45,8 +45,6 @@ class _ManUpWidgetState extends State<ManUpWidget>
 
   // man up delegate
   @override
-  BuildContext get buildContext => context;
-  @override
   bool get shouldShowManupAlert =>
       this?.widget?.shouldShowAlert?.call() ?? true;
 
