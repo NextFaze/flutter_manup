@@ -1,9 +1,7 @@
 part of manup;
 
-/// Default implemetation of [ManupDelegate], just override `appContext` to show app alerts.
+/// Default implemetation of [ManupDelegate]
 mixin ManupDelegateMixin on ManupDelegate {
-  // required
-  BuildContext get buildContext => null;
   bool get shouldShowManupAlert => true;
   // informative
   void manupStatusChanged(ManUpStatus status) {}
