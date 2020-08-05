@@ -1,7 +1,5 @@
 library manup;
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pub_semver/pub_semver.dart';

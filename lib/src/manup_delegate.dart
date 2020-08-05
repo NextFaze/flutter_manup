@@ -1,16 +1,11 @@
 part of manup;
 
 /// `ManupDelegate` class has required methods.
-/// Need  `appContext` and `shouldShowAlert` to show dialog.
-/// Other methods are optional.
+/// Need  `buildContext` and `shouldShowManupAlert` to show dialog.
 /// Default implemetation is in `ManupDelegateMixin` file.
 abstract class ManupDelegate {
-  // required
-  BuildContext get appContext;
-  http.Client get httpClient;
-  // optionals
+  BuildContext get buildContext;
   bool get shouldShowManupAlert;
-  String get operatingSystem;
   // informative
   void manUpConfigUpdateStarting();
   void manUpUpdateRequired();
