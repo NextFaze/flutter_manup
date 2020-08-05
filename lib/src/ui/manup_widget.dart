@@ -21,7 +21,11 @@ class ManUpWidget extends StatefulWidget {
 }
 
 class _ManUpWidgetState extends State<ManUpWidget>
-    with ManupDelegate, ManupDelegateMixin, DialogMixin {
+    with
+        ManupDelegate,
+        ManupDelegateMixin,
+        DialogMixin,
+        WidgetsBindingObserver {
   bool isshowingManupAlert = false;
   //
   @override
@@ -29,6 +33,7 @@ class _ManUpWidgetState extends State<ManUpWidget>
     super.initState();
     widget.service.delegate = this;
     validateManup();
+    WidgetsBinding.instance?.addObserver(this);
   }
 
   validateManup() {
@@ -62,10 +67,18 @@ class _ManUpWidgetState extends State<ManUpWidget>
     }
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!isshowingManupAlert && state == AppLifecycleState.resumed) {
+      validateManup();
+    }
+  }
+
 //
   @override
   void dispose() {
     widget.service.close();
+    WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 }
