@@ -1,6 +1,6 @@
 name: manup
 description: Mandatory update for Flutter Apps.
-version: 0.0.3
+version: 1.0.0
 homepage: https://github.com/NextFaze/flutter_manup
 
 environment:
