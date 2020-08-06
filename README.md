@@ -1,4 +1,4 @@
-# Mandatory Update
+# Manup
 
 [![Build Status](https://travis-ci.org/NextFaze/flutter_manup.svg?branch=master)](https://travis-ci.org/NextFaze/flutter_manup) [![Coverage Status](https://coveralls.io/repos/github/NextFaze/flutter_manup/badge.svg?branch=master)](https://coveralls.io/github/NextFaze/flutter_manup?branch=master)
 
@@ -50,13 +50,17 @@ service.close();
 - `disabled`: The app has been marked as disabled and should not run
 
 ### Using the Service with Delegate
+
 Implement `ManupDelegate` or use `ManupDelegateMixin` mixin which has default implementation.
-  `void manUpConfigUpdateStarting()` : will be called before starting to validate.
-  `void manupStatusChanged(ManUpStatus status)` : will be called every time status changes.
-  `void manUpUpdateAvailable()` : will be called when ManUpStatus changes to supported
-  `void manUpUpdateRequired()` : will be called when ManUpStatus changes to unsupported
-  `void manUpMaintenanceMode()`: will be called when ManUpStatus changes to disabled
+
+- `manUpConfigUpdateStarting()` : will be called before starting to validate
+- `manupStatusChanged(ManUpStatus status)` : will be called every time status changes
+- `manUpUpdateAvailable()` : will be called when ManUpStatus changes to supported
+- `manUpUpdateRequired()` : will be called when ManUpStatus changes to unsupported
+- `manUpMaintenanceMode()`: will be called when ManUpStatus changes to disabled
+
 ## Example
+
 ```dart
 class ManUpExample extends StatefulWidget {
   ManUpExample({Key key}) : super(key: key);
