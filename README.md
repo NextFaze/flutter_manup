@@ -1,4 +1,4 @@
-# Mandatory Update
+# Manup
 
 [![Build Status](https://travis-ci.org/NextFaze/flutter_manup.svg?branch=master)](https://travis-ci.org/NextFaze/flutter_manup) [![Coverage Status](https://coveralls.io/repos/github/NextFaze/flutter_manup/badge.svg?branch=master)](https://coveralls.io/github/NextFaze/flutter_manup?branch=master)
 
@@ -39,6 +39,7 @@ You can use `ManUpService` directly in your code. As part of your app startup lo
 ```dart
 ManUpService service = ManUpService('https://example.com/manup.json');
 ManUpStatus result = await service.validate();
+service.close();
 ```
 
 `ManUpStatus` will let you know how the version of the app running compares to the metadata:
@@ -48,6 +49,73 @@ ManUpStatus result = await service.validate();
 - `unsupported`: The app is an unsupported version and should not run
 - `disabled`: The app has been marked as disabled and should not run
 
+### Using the Service with Delegate
+
+Implement `ManupDelegate` or use `ManupDelegateMixin` mixin which has default implementation.
+
+- `manUpConfigUpdateStarting()` : will be called before starting to validate
+- `manupStatusChanged(ManUpStatus status)` : will be called every time status changes
+- `manUpUpdateAvailable()` : will be called when ManUpStatus changes to supported
+- `manUpUpdateRequired()` : will be called when ManUpStatus changes to unsupported
+- `manUpMaintenanceMode()`: will be called when ManUpStatus changes to disabled
+
+## Example
+
+```dart
+class ManUpExample extends StatefulWidget {
+  ManUpExample({Key key}) : super(key: key);
+
+  @override
+  _ManUpExampleState createState() => _ManUpExampleState();
+}
+
+class _ManUpExampleState extends State<ManUpExample>
+    with ManupDelegate, ManupDelegateMixin, DialogMixin {
+  ManUpService service;
+  @override
+  void initState() {
+    super.initState();
+    service = ManUpService("https://example.com/manup.json",
+        http: http.Client(), os: Platform.operatingSystem);
+    service.delegate = this;
+    service.validate();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  void manUpStatusChanged(ManUpStatus status) {
+    // handle status or show default dialog
+    showManupDialog(status, service.getMessage(forStatus: status),
+        service.configData.updateUrl);
+  }
+
+  @override
+  void dispose() {
+    service?.close();
+    super.dispose();
+  }
+}
+```
+
+### Using the Service with Helper Widget
+Wrap your widget with `ManUpWidget` to automaticaly handle every thing.
+```dart
+@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ManUpWidget(
+          service: manUpService,
+          shouldShowAlert: () => true,
+          onComplete: (bool isComplete) => print(isComplete),
+          onError: (dynamic e) => print(e.toString()),
+          child: Container()),
+    );
+  }
+```
 ### Exception Handling
 
 `validate` will throw a `ManUpException` if the lookup failed for any reason. Most likely, this will be caused

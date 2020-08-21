@@ -36,18 +36,17 @@ class _ManUpWidgetState extends State<ManUpWidget>
     WidgetsBinding.instance?.addObserver(this);
   }
 
+  @override
+  Widget build(BuildContext context) => widget?.child;
+
   validateManup() {
     widget.service.validate().catchError((e) => widget?.onError(e));
   }
 
-  @override
-  Widget build(BuildContext context) => widget?.child;
-
-  // man up delegate
-  @override
+  // Man up
   bool get shouldShowManupAlert =>
       this?.widget?.shouldShowAlert?.call() ?? true;
-
+  // man up delegate
   @override
   void manUpStatusChanged(ManUpStatus status) {
     if (status == ManUpStatus.latest) {
