@@ -136,13 +136,9 @@ class ManUpService {
   }
 
   Future<Metadata> _readManupFile() async {
-    try {
-      var data = await fileStorage.readfile();
-      Map<String, dynamic> json = jsonDecode(data);
-      return Metadata(data: json);
-    } catch (e) {
-      throw e;
-    }
+    var data = await fileStorage.readfile();
+    Map<String, dynamic> json = jsonDecode(data);
+    return Metadata(data: json);
   }
 
   //call this on dispose.
