@@ -74,7 +74,7 @@ class _ManUpWidgetState extends State<ManUpWidget>
 //
   @override
   void dispose() {
-    widget.service.close();
+    widget?.service?.close();
     WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }

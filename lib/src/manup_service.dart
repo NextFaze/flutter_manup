@@ -3,6 +3,8 @@ part of manup;
 class ManUpService {
   final String url;
   final PackageInfoProvider packageInfoProvider;
+  @visibleForTesting
+  ConfigStorage fileStorage = ConfigStorage();
 
   String os;
   Metadata _manupData;
@@ -13,11 +15,12 @@ class ManUpService {
   http.Client _client;
 
   ///
-  ManUpService(this.url,
-      {this.packageInfoProvider = const DefaultPackageInfoProvider(),
-      this.os,
-      http.Client http})
-      : _client = http;
+  ManUpService(
+    this.url, {
+    this.packageInfoProvider = const DefaultPackageInfoProvider(),
+    this.os,
+    http.Client http,
+  }) : _client = http;
 
   Future<ManUpStatus> validate() async {
     delegate?.manUpConfigUpdateStarting?.call();
@@ -27,6 +30,8 @@ class ManUpService {
       return status;
     } catch (e) {
       throw e;
+    } finally {
+      _storeManupFile();
     }
   }
 
@@ -79,7 +84,11 @@ class ManUpService {
       Map<String, dynamic> json = jsonDecode(data.body);
       return Metadata(data: json);
     } catch (exception) {
-      throw ManUpException(exception.toString());
+      try {
+        return _readManupFile();
+      } catch (e) {
+        throw ManUpException(exception.toString());
+      }
     }
   }
 
@@ -116,9 +125,25 @@ class ManUpService {
     }
   }
 
+  /// manup file storage
+  void _storeManupFile() async {
+    try {
+      String json = jsonEncode(_manupData._data);
+      fileStorage.storeFile(fileData: json);
+    } catch (e) {
+      print("cannot store file. $e");
+    }
+  }
+
+  Future<Metadata> _readManupFile() async {
+    var data = await fileStorage.readfile();
+    Map<String, dynamic> json = jsonDecode(data);
+    return Metadata(data: json);
+  }
+
   //call this on dispose.
   void close() {
-    _client.close();
+    _client?.close();
     _client = null;
     this.delegate = null;
   }
