@@ -1,3 +1,5 @@
+## [1.0.1]
+Add capability to store and retrieve man up config.
 ## [1.0.0]
 ### First major release
 Added Delegate support with `ManupDelegate`
