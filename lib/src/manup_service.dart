@@ -147,7 +147,7 @@ class ManUpService {
 
   //call this on dispose.
   void close() {
-    _client.close();
+    _client?.close();
     _client = null;
     this.delegate = null;
   }
