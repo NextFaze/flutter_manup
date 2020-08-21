@@ -20,8 +20,19 @@ class MockPackageInfo extends PackageInfoProvider {
   }
 }
 
+class MockConfigStorage extends Mock implements ConfigStorage {}
+
 void main() {
   group('ManUpService', () {
+    final mockfilestorage = MockConfigStorage();
+
+    setUp(() {
+      when(mockfilestorage.storeFile(
+              fileData: anyNamed("fileData"), filename: "manup_config.json"))
+          .thenAnswer((_) => Future.value(true));
+      when(mockfilestorage.readfile(filename: "manup_config.json"))
+          .thenThrow(Exception("unwated call"));
+    });
     test('parseJson converts to a PlatformData object', () {
       Map<String, dynamic> json = jsonDecode('''
       {
@@ -61,6 +72,8 @@ void main() {
             .thenAnswer((Invocation i) => Future.value(response));
         var service = ManUpService('https://example.com/manup.json',
             http: client, os: osGetter());
+        service.fileStorage = mockfilestorage;
+
         var metadata = await service.getMetadata();
         verify(client.get("https://example.com/manup.json")).called(1);
 
@@ -101,6 +114,7 @@ void main() {
             .thenAnswer((Invocation i) => Future.value(response));
         var service = ManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo, http: client, os: osGetter());
+        service.fileStorage = mockfilestorage;
         await service.validate();
         verify(client.get("https://example.com/manup.json")).called(1);
 
@@ -139,7 +153,7 @@ void main() {
 
         var service = ManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo, http: client, os: osGetter());
-
+        service.fileStorage = mockfilestorage;
         var result = await service.validate();
         expect(result, ManUpStatus.unsupported);
       });
@@ -167,7 +181,7 @@ void main() {
 
         var service = ManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo, http: client, os: osGetter());
-
+        service.fileStorage = mockfilestorage;
         var result = await service.validate();
         expect(result, ManUpStatus.supported);
       });
@@ -189,7 +203,7 @@ void main() {
 
         var service = ManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo, http: client, os: osGetter());
-
+        service.fileStorage = mockfilestorage;
         var result = await service.validate();
         expect(result, ManUpStatus.supported);
       });
@@ -211,7 +225,7 @@ void main() {
 
         var service = ManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo, http: client, os: osGetter());
-
+        service.fileStorage = mockfilestorage;
         var result = await service.validate();
         expect(result, ManUpStatus.latest);
       });
@@ -233,7 +247,7 @@ void main() {
 
         var service = ManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo, http: client, os: osGetter());
-
+        service.fileStorage = mockfilestorage;
         var result = await service.validate();
         expect(result, ManUpStatus.latest);
       });
@@ -255,7 +269,7 @@ void main() {
 
         var service = ManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo, http: client, os: osGetter());
-
+        service.fileStorage = mockfilestorage;
         var result = await service.validate();
         expect(result, ManUpStatus.disabled);
       });
@@ -267,9 +281,73 @@ void main() {
 
         var service = ManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo, http: client, os: osGetter());
-
+        service.fileStorage = mockfilestorage;
         expect(() => service.validate(), throwsException);
       });
+    });
+  });
+  group("ManUpService: store service", () {
+    final mockfilestorage = MockConfigStorage();
+    setUp(() {});
+
+    test('store file should get call', () async {
+      when(mockfilestorage.storeFile(
+              fileData: anyNamed("fileData"), filename: "manup_config.json"))
+          .thenAnswer((_) => Future.value(true));
+      when(mockfilestorage.readfile(filename: "manup_config.json"))
+          .thenThrow(Exception("unwated call"));
+      var packageInfo = MockPackageInfo("2.4.1");
+      var client = MockClient();
+      var response = http.Response('''
+          {
+            "ios": {
+              "latest": "2.4.1",
+              "minimum": "2.1.0",
+              "url": "http://example.com/myAppUpdate",
+              "enabled": true
+            }
+          }
+          ''', 200);
+      when(client.get("https://example.com/manup.json"))
+          .thenAnswer((Invocation i) => Future.value(response));
+      var service = ManUpService('https://example.com/manup.json',
+          packageInfoProvider: packageInfo, http: client, os: osGetter());
+      service.fileStorage = mockfilestorage;
+      var result = await service.validate();
+      expect(result, ManUpStatus.latest);
+      //
+      verify(mockfilestorage.storeFile(
+              fileData: anyNamed("fileData"), filename: "manup_config.json"))
+          .called(1);
+    });
+    test('read file should get call', () async {
+      when(mockfilestorage.storeFile(
+              fileData: anyNamed("fileData"), filename: "manup_config.json"))
+          .thenAnswer((_) => Future.value(true));
+      when(mockfilestorage.readfile(filename: "manup_config.json"))
+          .thenAnswer((_) => Future.value('''
+          {
+            "ios": {
+              "latest": "2.4.1",
+              "minimum": "2.1.0",
+              "url": "http://example.com/myAppUpdate",
+              "enabled": true
+            }
+          }
+          '''));
+
+      var packageInfo = MockPackageInfo("2.4.1");
+      var client = MockClient();
+      var response = http.Response('', 500);
+      when(client.get("https://example.com/manup.json"))
+          .thenAnswer((Invocation i) => Future.value(response));
+      var service = ManUpService('https://example.com/manup.json',
+          packageInfoProvider: packageInfo, http: client, os: osGetter());
+      service.fileStorage = mockfilestorage;
+      var result = await service.validate();
+      expect(result, ManUpStatus.latest);
+      //
+      verify(mockfilestorage.readfile(filename: "manup_config.json")).called(1);
     });
   });
 }
