@@ -1,3 +1,6 @@
+## [1.0.2]
+pub spec upgrade
+Stop throwing reading file exception.
 ## [1.0.1]
 Add capability to store and retrieve man up config.
 ## [1.0.0]
