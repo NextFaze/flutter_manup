@@ -85,7 +85,8 @@ class ManUpService {
       return Metadata(data: json);
     } catch (exception) {
       try {
-        return _readManupFile();
+        var metadata = await _readManupFile();
+        return metadata;
       } catch (e) {
         throw ManUpException(exception.toString());
       }
@@ -128,6 +129,9 @@ class ManUpService {
   /// manup file storage
   void _storeManupFile() async {
     try {
+      if (_manupData == null || _manupData._data == null) {
+        return;
+      }
       String json = jsonEncode(_manupData._data);
       fileStorage.storeFile(fileData: json);
     } catch (e) {
@@ -145,6 +149,7 @@ class ManUpService {
   void close() {
     _client?.close();
     _client = null;
+    fileStorage = null;
     this.delegate = null;
   }
 }
