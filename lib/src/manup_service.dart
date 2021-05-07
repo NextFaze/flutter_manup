@@ -73,6 +73,12 @@ class ManUpService {
       return data.ios;
     } else if (os == 'android') {
       return data.android;
+    } else if (os == 'windows') {
+      return data.windows;
+    } else if (os == 'macos') {
+      return data.macos;
+    } else if (os == 'linux') {
+      return data.linux;
     }
     throw ManUpException('Platform not supported');
   }

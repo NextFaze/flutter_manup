@@ -35,6 +35,15 @@ class Metadata {
   /// android specific configuration
   PlatformData get android => PlatformData.fromData(_data['android']);
 
+  /// windows specific configuration
+  PlatformData get windows => PlatformData.fromData(_data['windows']);
+
+  /// macos specific configuration
+  PlatformData get macos => PlatformData.fromData(_data['macos']);
+
+  /// linux specific configuration
+  PlatformData get linux => PlatformData.fromData(_data['linux']);
+
   // Configuration file data
   final Map<String, dynamic> _data;
 
