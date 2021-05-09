@@ -86,7 +86,8 @@ class ManUpService {
   @visibleForTesting
   Future<Metadata> getMetadata() async {
     try {
-      var data = await _client.get(this.url);
+      final uri = Uri.parse(this.url);
+      var data = await _client.get(uri);
       Map<String, dynamic> json = jsonDecode(data.body);
       return Metadata(data: json);
     } catch (exception) {
