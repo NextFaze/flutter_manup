@@ -1,3 +1,5 @@
+## [1.0.3]
+Add support for desktop platforms
 ## [1.0.2]
 pub spec upgrade
 Stop throwing reading file exception.
