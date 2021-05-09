@@ -73,6 +73,12 @@ class ManUpService {
       return data.ios;
     } else if (os == 'android') {
       return data.android;
+    } else if (os == 'windows') {
+      return data.windows;
+    } else if (os == 'macos') {
+      return data.macos;
+    } else if (os == 'linux') {
+      return data.linux;
     }
     throw ManUpException('Platform not supported');
   }
@@ -80,7 +86,8 @@ class ManUpService {
   @visibleForTesting
   Future<Metadata> getMetadata() async {
     try {
-      var data = await _client.get(this.url);
+      final uri = Uri.parse(this.url);
+      var data = await _client.get(uri);
       Map<String, dynamic> json = jsonDecode(data.body);
       return Metadata(data: json);
     } catch (exception) {

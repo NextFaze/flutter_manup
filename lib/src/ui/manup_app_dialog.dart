@@ -18,12 +18,12 @@ class ManupAppDialog {
               title: Text(message),
               actions: <Widget>[
                 hasCancelText
-                    ? FlatButton(
+                    ? TextButton(
                         child: Text(falseText),
                         onPressed: () => Navigator.of(context).pop(false),
                       )
                     : Container(),
-                FlatButton(
+                TextButton(
                   child: Text(trueText,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   onPressed: () => Navigator.of(context).pop(true),

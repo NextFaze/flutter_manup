@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,8 +15,11 @@ class MockPackageInfo extends PackageInfoProvider {
   MockPackageInfo(this.version);
   @override
   Future<PackageInfo> getInfo() {
-    return Future.value(
-        PackageInfo(appName: "Test App", version: this.version));
+    return Future.value(PackageInfo(
+        appName: "Test App",
+        version: this.version,
+        buildNumber: '0',
+        packageName: 'com.nextfaze.manup.test'));
   }
 }
 
@@ -68,14 +71,15 @@ void main() {
             }
           }
           ''', 200);
-        when(client.get("https://example.com/manup.json"))
+        when(client.get(Uri.parse("https://example.com/manup.json")))
             .thenAnswer((Invocation i) => Future.value(response));
         var service = ManUpService('https://example.com/manup.json',
             http: client, os: osGetter());
         service.fileStorage = mockfilestorage;
 
         var metadata = await service.getMetadata();
-        verify(client.get("https://example.com/manup.json")).called(1);
+        verify(client.get(Uri.parse("https://example.com/manup.json")))
+            .called(1);
 
         expect(metadata.ios.enabled, true);
         expect(metadata.ios.latestVersion, "2.4.1");
@@ -110,13 +114,14 @@ void main() {
             "number-of-coins": 12
           }
           ''', 200);
-        when(client.get("https://example.com/manup.json"))
+        when(client.get(Uri.parse("https://example.com/manup.json")))
             .thenAnswer((Invocation i) => Future.value(response));
         var service = ManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo, http: client, os: osGetter());
         service.fileStorage = mockfilestorage;
         await service.validate();
-        verify(client.get("https://example.com/manup.json")).called(1);
+        verify(client.get(Uri.parse("https://example.com/manup.json")))
+            .called(1);
 
         expect(service.setting<String>(key: "api-base"),
             "http://api.example.com/");
@@ -148,7 +153,7 @@ void main() {
             }
           }
           ''', 200);
-        when(client.get("https://example.com/manup.json"))
+        when(client.get(Uri.parse("https://example.com/manup.json")))
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
@@ -176,7 +181,7 @@ void main() {
             }
           }
           ''', 200);
-        when(client.get("https://example.com/manup.json"))
+        when(client.get(Uri.parse("https://example.com/manup.json")))
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
@@ -198,7 +203,7 @@ void main() {
             }
           }
           ''', 200);
-        when(client.get("https://example.com/manup.json"))
+        when(client.get(Uri.parse("https://example.com/manup.json")))
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
@@ -220,7 +225,7 @@ void main() {
             }
           }
           ''', 200);
-        when(client.get("https://example.com/manup.json"))
+        when(client.get(Uri.parse("https://example.com/manup.json")))
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
@@ -242,7 +247,7 @@ void main() {
             }
           }
           ''', 200);
-        when(client.get("https://example.com/manup.json"))
+        when(client.get(Uri.parse("https://example.com/manup.json")))
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
@@ -264,7 +269,7 @@ void main() {
             }
           }
           ''', 200);
-        when(client.get("https://example.com/manup.json"))
+        when(client.get(Uri.parse("https://example.com/manup.json")))
             .thenAnswer((Invocation i) => Future.value(response));
 
         var service = ManUpService('https://example.com/manup.json',
@@ -276,7 +281,7 @@ void main() {
       test('throws an exception if the lookup failed', () async {
         var packageInfo = MockPackageInfo("2.4.1");
         var client = MockClient();
-        when(client.get("https://example.com/manup.json"))
+        when(client.get(Uri.parse("https://example.com/manup.json")))
             .thenThrow(Exception('test error'));
 
         var service = ManUpService('https://example.com/manup.json',
@@ -308,7 +313,7 @@ void main() {
             }
           }
           ''', 200);
-      when(client.get("https://example.com/manup.json"))
+      when(client.get(Uri.parse("https://example.com/manup.json")))
           .thenAnswer((Invocation i) => Future.value(response));
       var service = ManUpService('https://example.com/manup.json',
           packageInfoProvider: packageInfo, http: client, os: osGetter());
@@ -339,7 +344,7 @@ void main() {
       var packageInfo = MockPackageInfo("2.4.1");
       var client = MockClient();
       var response = http.Response('', 500);
-      when(client.get("https://example.com/manup.json"))
+      when(client.get(Uri.parse("https://example.com/manup.json")))
           .thenAnswer((Invocation i) => Future.value(response));
       var service = ManUpService('https://example.com/manup.json',
           packageInfoProvider: packageInfo, http: client, os: osGetter());

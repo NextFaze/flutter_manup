@@ -5,7 +5,7 @@ class ManUpWidget extends StatefulWidget {
   final Widget child;
   final bool Function() shouldShowAlert;
   final void Function(bool) onComplete;
-  final void Function(dynamic) onError;
+  final ManUpStatus Function(dynamic) onError;
   //
   ManUpWidget(
       {Key key,
