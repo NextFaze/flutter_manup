@@ -54,10 +54,11 @@ class _ManUpWidgetState extends State<ManUpWidget>
       this.widget.onComplete.call(true);
       return;
     }
-    if (this.shouldShowManUpAlert) {
+    var updateUrl = widget.service.configData?.updateUrl;
+    if (this.shouldShowManUpAlert && updateUrl != null) {
       isShowingManUpAlert = true;
-      showManUpDialog(status, widget.service.getMessage(forStatus: status),
-              widget.service.configData.updateUrl)
+      showManUpDialog(
+              status, widget.service.getMessage(forStatus: status), updateUrl)
           .then((isUpdateLater) =>
               isUpdateLater ? this.widget.onComplete.call(true) : isUpdateLater)
           .then((_) => isShowingManUpAlert = false);

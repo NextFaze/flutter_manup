@@ -33,31 +33,38 @@ class PlatformData {
 /// Version information extracted from the JSON file
 class Metadata {
   /// ios specific configuration
-  PlatformData get ios => PlatformData.fromData(_data!['ios']);
+  PlatformData? get ios =>
+      _data?['ios'] != null ? PlatformData.fromData(_data!['ios']) : null;
 
   /// android specific configuration
-  PlatformData get android => PlatformData.fromData(_data!['android']);
+  PlatformData? get android => _data?['android'] != null
+      ? PlatformData.fromData(_data!['android'])
+      : null;
 
   /// windows specific configuration
-  PlatformData get windows => PlatformData.fromData(_data!['windows']);
+  PlatformData? get windows => _data?['windows'] != null
+      ? PlatformData.fromData(_data!['windows'])
+      : null;
 
   /// macos specific configuration
-  PlatformData get macos => PlatformData.fromData(_data!['macos']);
+  PlatformData? get macos =>
+      _data?['macos'] != null ? PlatformData.fromData(_data!['macos']) : null;
 
   /// linux specific configuration
-  PlatformData get linux => PlatformData.fromData(_data!['linux']);
+  PlatformData? get linux =>
+      _data?['linux'] != null ? PlatformData.fromData(_data!['linux']) : null;
 
-  // Configuration file data
-  final Map<String, dynamic>? _data;
-
-  dynamic rawSetting({String? key}) =>
-      _data!.containsKey(key) ? _data![key] : null;
+  ///
+  ///
+  dynamic rawSetting({String? key}) => _data?[key] ?? null;
 
   T? setting<T>({String? key}) {
     var value = rawSetting(key: key);
     return value is T ? value : null;
   }
 
+  // Configuration file data
+  final Map<String, dynamic>? _data;
   Metadata({Map<String, dynamic>? data}) : _data = data;
 }
 

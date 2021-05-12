@@ -9,7 +9,7 @@ class ManUpService {
   String? os;
   Metadata? _manUpData;
   // read platform data
-  PlatformData get configData => this.getPlatformData(os, _manUpData);
+  PlatformData? get configData => this.getPlatformData(os, _manUpData);
   ManupDelegate? delegate;
 
   final http.Client _client;
@@ -41,7 +41,11 @@ class ManUpService {
     PackageInfo info = await this.packageInfoProvider.getInfo();
     _manUpData = await this.getMetadata();
 
-    PlatformData platformData = configData;
+    PlatformData? platformData = configData;
+    //
+    if (platformData == null) {
+      return ManUpStatus.unsupported;
+    }
     if (!platformData.enabled) {
       return ManUpStatus.disabled;
     }
@@ -66,7 +70,7 @@ class ManUpService {
   T? setting<T>({String? key}) => _manUpData?.setting(key: key) ?? null;
 
   @visibleForTesting
-  PlatformData getPlatformData(String? os, Metadata? data) {
+  PlatformData? getPlatformData(String? os, Metadata? data) {
     if (data == null) {
       throw ManUpException('No data, validate must be called first.');
     }
