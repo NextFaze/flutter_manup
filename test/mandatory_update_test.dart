@@ -60,6 +60,12 @@ void main() {
     group('getMetadata', () {
       http.Client client;
 
+      setUp(() {
+        when(mockFileStorage.storeFile(
+                filename: _manUpFile, fileData: anyNamed('fileData')))
+            .thenAnswer((_) => Future.value(true));
+      });
+
       test('It fetches and returns metadata', () async {
         var response = http.Response('''
           {
@@ -83,16 +89,32 @@ void main() {
 
         var metadata = await service.getMetadata();
 
-        expect(metadata.ios.enabled, true);
-        expect(metadata.ios.latestVersion, "2.4.1");
-        expect(metadata.ios.minVersion, "2.1.0");
-        expect(metadata.ios.updateUrl, "http://example.com/myAppUpdate");
-
-        expect(metadata.android.enabled, false);
-        expect(metadata.android.latestVersion, "2.5.1");
-        expect(metadata.android.minVersion, "1.9.0");
-        expect(metadata.android.updateUrl,
+        expect(metadata.ios != null, true);
+        var iosMetaData = metadata.ios!;
+        expect(iosMetaData.enabled, true);
+        expect(iosMetaData.latestVersion, "2.4.1");
+        expect(iosMetaData.minVersion, "2.1.0");
+        expect(iosMetaData.updateUrl, "http://example.com/myAppUpdate");
+        //
+        expect(metadata.android != null, true);
+        var androidMetaData = metadata.android!;
+        expect(androidMetaData.enabled, false);
+        expect(androidMetaData.latestVersion, "2.5.1");
+        expect(androidMetaData.minVersion, "1.9.0");
+        expect(androidMetaData.updateUrl,
             "http://example.com/myAppUpdate/android");
+        //
+        expect(metadata.windows, null);
+        expect(metadata.macos, null);
+        expect(metadata.linux, null);
+        //
+        expect(metadata.rawSetting(key: "ios") != null, true);
+        expect(metadata.rawSetting(key: "windows"), null);
+        expect(metadata.rawSetting(key: "anything"), null);
+        //
+        expect(
+            metadata.setting<Map<String, dynamic>>(key: "ios") != null, true);
+        expect(metadata.setting<String>(key: "ios"), null);
       });
 
       test('Read custom properties from configuration', () async {
@@ -125,7 +147,7 @@ void main() {
             storage: mockFileStorage);
 
         await service.validate();
-
+        //
         expect(service.setting<String>(key: "api-base"),
             "http://api.example.com/");
         expect(service.setting<int>(key: "api-base"), null);
