@@ -11,7 +11,7 @@ ios/Runner/GeneratedPluginRegistrant.*
 android/local.properties
 .vscode
 coverage
-./test/mandatory_update_test.mocks.dart
+test/mandatory_update_test.mocks.dart
 
 # Flutter/Dart/Pub related
 **/doc/api/
