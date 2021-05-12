@@ -1,12 +1,12 @@
 part of manup;
 
 class ManupAppDialog {
-  Future<bool> showAlertDialog(
-      {String message = " ",
+  Future<bool?> showAlertDialog(
+      {String? message,
       String trueText = "ok",
-      String falseText,
+      String? falseText,
       bool barrierDismissible = false,
-      @required BuildContext context}) {
+      required BuildContext context}) {
     bool hasCancelText = falseText != null && falseText.isNotEmpty;
     return showDialog(
         barrierDismissible: barrierDismissible,
@@ -15,7 +15,7 @@ class ManupAppDialog {
           return WillPopScope(
             onWillPop: () => Future.value(barrierDismissible),
             child: AlertDialog(
-              title: Text(message),
+              title: Text(message ?? ""),
               actions: <Widget>[
                 hasCancelText
                     ? TextButton(

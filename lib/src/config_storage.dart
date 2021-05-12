@@ -1,16 +1,18 @@
 part of manup;
 
 class ConfigStorage {
-  static const String _manupFile = "manup_config.json";
+  const ConfigStorage();
+  static const String _manUpFile = "man_up_config.json";
   //
-  Future<bool> storeFile({String filename = _manupFile, String fileData}) {
+  Future<bool> storeFile(
+      {String filename = _manUpFile, required String fileData}) {
     return getApplicationDocumentsDirectory().then((directory) {
       final File file = File('${directory.path}/$filename');
       return file.writeAsString(fileData).then((_) => Future.value(true));
     });
   }
 
-  Future<String> readfile({String filename = _manupFile}) {
+  Future<String> readFile({String filename = _manUpFile}) async {
     return getApplicationDocumentsDirectory().then((directory) {
       final File file = File('${directory.path}/$filename');
       return file.exists().then((isExist) =>

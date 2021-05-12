@@ -15,7 +15,10 @@ class PlatformData {
   final String updateUrl;
 
   PlatformData(
-      {this.minVersion, this.latestVersion, this.enabled, this.updateUrl});
+      {required this.minVersion,
+      required this.latestVersion,
+      required this.enabled,
+      required this.updateUrl});
 
   @visibleForTesting
   static PlatformData fromData(Map<String, dynamic> data) {
@@ -30,32 +33,32 @@ class PlatformData {
 /// Version information extracted from the JSON file
 class Metadata {
   /// ios specific configuration
-  PlatformData get ios => PlatformData.fromData(_data['ios']);
+  PlatformData get ios => PlatformData.fromData(_data!['ios']);
 
   /// android specific configuration
-  PlatformData get android => PlatformData.fromData(_data['android']);
+  PlatformData get android => PlatformData.fromData(_data!['android']);
 
   /// windows specific configuration
-  PlatformData get windows => PlatformData.fromData(_data['windows']);
+  PlatformData get windows => PlatformData.fromData(_data!['windows']);
 
   /// macos specific configuration
-  PlatformData get macos => PlatformData.fromData(_data['macos']);
+  PlatformData get macos => PlatformData.fromData(_data!['macos']);
 
   /// linux specific configuration
-  PlatformData get linux => PlatformData.fromData(_data['linux']);
+  PlatformData get linux => PlatformData.fromData(_data!['linux']);
 
   // Configuration file data
-  final Map<String, dynamic> _data;
+  final Map<String, dynamic>? _data;
 
-  dynamic rawSetting({String key}) =>
-      _data.containsKey(key) ? _data[key] : null;
+  dynamic rawSetting({String? key}) =>
+      _data!.containsKey(key) ? _data![key] : null;
 
-  T setting<T>({String key}) {
+  T? setting<T>({String? key}) {
     var value = rawSetting(key: key);
     return value is T ? value : null;
   }
 
-  Metadata({Map<String, dynamic> data}) : _data = data;
+  Metadata({Map<String, dynamic>? data}) : _data = data;
 }
 
 // message extension

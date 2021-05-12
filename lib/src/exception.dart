@@ -1,7 +1,7 @@
 part of manup;
 
 class ManUpException implements Exception {
-  final String msg;
+  final String? msg;
   const ManUpException([this.msg]);
 
   @override

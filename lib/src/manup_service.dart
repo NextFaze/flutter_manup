@@ -3,27 +3,29 @@ part of manup;
 class ManUpService {
   final String url;
   final PackageInfoProvider packageInfoProvider;
-  @visibleForTesting
-  ConfigStorage fileStorage = ConfigStorage();
 
-  String os;
-  Metadata _manupData;
+  final ConfigStorage fileStorage;
+
+  String? os;
+  Metadata? _manUpData;
   // read platform data
-  PlatformData get configData => this.getPlatformData(os, _manupData);
-  ManupDelegate delegate;
+  PlatformData get configData => this.getPlatformData(os, _manUpData);
+  ManupDelegate? delegate;
 
-  http.Client _client;
+  final http.Client _client;
 
   ///
   ManUpService(
     this.url, {
     this.packageInfoProvider = const DefaultPackageInfoProvider(),
     this.os,
-    http.Client http,
-  }) : _client = http;
+    required http.Client http,
+    ConfigStorage storage = const ConfigStorage(),
+  })  : _client = http,
+        fileStorage = storage;
 
   Future<ManUpStatus> validate() async {
-    delegate?.manUpConfigUpdateStarting?.call();
+    delegate?.manUpConfigUpdateStarting();
     try {
       ManUpStatus status = await _validate();
       this._handleManUpStatus(status);
@@ -31,13 +33,13 @@ class ManUpService {
     } catch (e) {
       throw e;
     } finally {
-      _storeManupFile();
+      await _storeManUpFile();
     }
   }
 
   Future<ManUpStatus> _validate() async {
     PackageInfo info = await this.packageInfoProvider.getInfo();
-    _manupData = await this.getMetadata();
+    _manUpData = await this.getMetadata();
 
     PlatformData platformData = configData;
     if (!platformData.enabled) {
@@ -61,10 +63,10 @@ class ManUpService {
     }
   }
 
-  T setting<T>({String key}) => _manupData?.setting(key: key) ?? null;
+  T? setting<T>({String? key}) => _manUpData?.setting(key: key) ?? null;
 
   @visibleForTesting
-  PlatformData getPlatformData(String os, Metadata data) {
+  PlatformData getPlatformData(String? os, Metadata? data) {
     if (data == null) {
       throw ManUpException('No data, validate must be called first.');
     }
@@ -87,11 +89,11 @@ class ManUpService {
     try {
       final uri = Uri.parse(this.url);
       var data = await _client.get(uri);
-      Map<String, dynamic> json = jsonDecode(data.body);
+      Map<String, dynamic>? json = jsonDecode(data.body);
       return Metadata(data: json);
     } catch (exception) {
       try {
-        var metadata = await _readManupFile();
+        var metadata = await _readManUpFile();
         return metadata;
       } catch (e) {
         throw ManUpException(exception.toString());
@@ -99,63 +101,59 @@ class ManUpService {
     }
   }
 
-  // manup status validation
-  _handleManUpStatus(ManUpStatus status) {
-    this.delegate?.manUpStatusChanged?.call(status);
+  // manUp status validation
+  void _handleManUpStatus(ManUpStatus status) {
+    this.delegate?.manUpStatusChanged(status);
     switch (status) {
       case ManUpStatus.supported:
-        this.delegate?.manUpUpdateAvailable?.call();
+        this.delegate?.manUpUpdateAvailable();
         break;
       case ManUpStatus.unsupported:
-        this.delegate?.manUpUpdateRequired?.call();
+        this.delegate?.manUpUpdateRequired();
         break;
       case ManUpStatus.disabled:
-        this.delegate?.manUpMaintenanceMode?.call();
+        this.delegate?.manUpMaintenanceMode();
         break;
       default:
         break;
     }
   }
 
-  String getMessage({ManUpStatus forStatus}) {
+  String? getMessage({ManUpStatus? forStatus}) {
     switch (forStatus) {
       case ManUpStatus.supported:
-        return _manupData?.supportedMessage;
+        return _manUpData?.supportedMessage;
       case ManUpStatus.unsupported:
-        return _manupData?.unsupportedMessage;
-        break;
+        return _manUpData?.unsupportedMessage;
       case ManUpStatus.disabled:
-        return _manupData?.disabledMessage;
-        break;
+        return _manUpData?.disabledMessage;
       default:
         return "";
     }
   }
 
-  /// manup file storage
-  void _storeManupFile() async {
+  /// manUp file storage
+  Future<void> _storeManUpFile() async {
     try {
-      if (_manupData == null || _manupData._data == null) {
+      if (_manUpData == null || _manUpData?._data == null) {
         return;
       }
-      String json = jsonEncode(_manupData._data);
-      fileStorage.storeFile(fileData: json);
+      String json = jsonEncode(_manUpData!._data);
+      await fileStorage.storeFile(fileData: json);
     } catch (e) {
       print("cannot store file. $e");
     }
   }
 
-  Future<Metadata> _readManupFile() async {
-    var data = await fileStorage.readfile();
-    Map<String, dynamic> json = jsonDecode(data);
+  Future<Metadata> _readManUpFile() async {
+    var data = await fileStorage.readFile();
+    Map<String, dynamic>? json = jsonDecode(data);
     return Metadata(data: json);
   }
 
   //call this on dispose.
   void close() {
-    _client?.close();
-    _client = null;
-    fileStorage = null;
+    _client.close();
     this.delegate = null;
   }
 }

@@ -8,73 +8,73 @@ class ManUpWidget extends StatefulWidget {
   final ManUpStatus Function(dynamic) onError;
   //
   ManUpWidget(
-      {Key key,
-      @required this.child,
-      @required this.service,
-      @required this.shouldShowAlert,
-      @required this.onComplete,
-      @required this.onError})
+      {Key? key,
+      required this.child,
+      required this.service,
+      required this.shouldShowAlert,
+      required this.onComplete,
+      required this.onError})
       : super(key: key);
 
   @override
   _ManUpWidgetState createState() => _ManUpWidgetState();
 }
 
+///
+///
 class _ManUpWidgetState extends State<ManUpWidget>
     with
         ManupDelegate,
         ManupDelegateMixin,
         DialogMixin,
         WidgetsBindingObserver {
-  bool isshowingManupAlert = false;
+  bool isShowingManUpAlert = false;
   //
   @override
   void initState() {
     super.initState();
     widget.service.delegate = this;
-    validateManup();
+    validateManUp();
     WidgetsBinding.instance?.addObserver(this);
   }
 
   @override
-  Widget build(BuildContext context) => widget?.child;
+  Widget build(BuildContext context) => widget.child;
 
-  validateManup() {
-    widget.service.validate().catchError((e) => widget?.onError(e));
+  validateManUp() {
+    widget.service.validate().catchError((e) => widget.onError(e));
   }
 
   // Man up
-  bool get shouldShowManupAlert =>
-      this?.widget?.shouldShowAlert?.call() ?? true;
+  bool get shouldShowManUpAlert => this.widget.shouldShowAlert.call();
   // man up delegate
   @override
   void manUpStatusChanged(ManUpStatus status) {
     if (status == ManUpStatus.latest) {
-      this.widget?.onComplete?.call(true);
+      this.widget.onComplete.call(true);
       return;
     }
-    if (this.shouldShowManupAlert) {
-      isshowingManupAlert = true;
-      showManupDialog(status, widget.service.getMessage(forStatus: status),
+    if (this.shouldShowManUpAlert) {
+      isShowingManUpAlert = true;
+      showManUpDialog(status, widget.service.getMessage(forStatus: status),
               widget.service.configData.updateUrl)
-          .then((isUpdateLater) => isUpdateLater
-              ? this.widget?.onComplete?.call(true)
-              : isUpdateLater)
-          .then((_) => isshowingManupAlert = false);
+          .then((isUpdateLater) =>
+              isUpdateLater ? this.widget.onComplete.call(true) : isUpdateLater)
+          .then((_) => isShowingManUpAlert = false);
     }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!isshowingManupAlert && state == AppLifecycleState.resumed) {
-      validateManup();
+    if (!isShowingManUpAlert && state == AppLifecycleState.resumed) {
+      validateManUp();
     }
   }
 
 //
   @override
   void dispose() {
-    widget?.service?.close();
+    widget.service.close();
     WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
