@@ -4,7 +4,7 @@ version: 1.0.4
 homepage: https://github.com/NextFaze/flutter_manup
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -20,6 +20,5 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^5.0.7
-
-
+  build_runner: any
 flutter:
