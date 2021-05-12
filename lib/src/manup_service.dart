@@ -61,7 +61,6 @@ class ManUpService {
     }
   }
 
-  @visibleForTesting
   T setting<T>({String key}) => _manupData?.setting(key: key) ?? null;
 
   @visibleForTesting
