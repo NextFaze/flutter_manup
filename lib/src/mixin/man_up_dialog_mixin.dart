@@ -13,7 +13,7 @@ mixin DialogMixin<T extends StatefulWidget> on State<T> {
     String? message,
     String? updateUrl,
   ) async {
-    ManupAppDialog _dialog = ManupAppDialog();
+    ManUpAppDialog _dialog = ManUpAppDialog();
     switch (status) {
       case ManUpStatus.latest:
         return Future.value(true);

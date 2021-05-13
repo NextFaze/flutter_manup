@@ -1,6 +1,6 @@
 part of manup;
 
-class ManupAppDialog {
+class ManUpAppDialog {
   Future<bool?> showAlertDialog(
       {String? message,
       String trueText = "ok",
