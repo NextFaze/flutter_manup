@@ -21,4 +21,3 @@ dev_dependencies:
     sdk: flutter
   mockito: ^5.0.7
   build_runner: any
-flutter:
