@@ -6,7 +6,7 @@ class ManUpService {
 
   final ConfigStorage fileStorage;
 
-  String? os;
+  String os;
   Metadata? _manUpData;
   // read platform data
   PlatformData? get configData => this.getPlatformData(os, _manUpData);
@@ -18,7 +18,7 @@ class ManUpService {
   ManUpService(
     this.url, {
     this.packageInfoProvider = const DefaultPackageInfoProvider(),
-    this.os,
+    required this.os,
     required http.Client http,
     ConfigStorage storage = const ConfigStorage(),
   })  : _client = http,
@@ -70,7 +70,7 @@ class ManUpService {
   T? setting<T>({String? key}) => _manUpData?.setting<T>(key: key) ?? null;
 
   @visibleForTesting
-  PlatformData? getPlatformData(String? os, Metadata? data) {
+  PlatformData? getPlatformData(String os, Metadata? data) {
     if (data == null) {
       throw ManUpException('No data, validate must be called first.');
     }
