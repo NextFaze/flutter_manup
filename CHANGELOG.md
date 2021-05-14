@@ -1,9 +1,15 @@
 # manUp
 
+## [2.0.1]
+
+Minor code changes.
+Making some variables required.
+Continue renaming some more files.
+
 ## [2.0.0]
 
 Migrate to null safety.
-**Breaking** Renaming of some files.
+**Breaking changes** Renaming some files.
 
 ## [1.0.4]
 
@@ -16,6 +22,7 @@ Add support for desktop platforms
 ## [1.0.2]
 
 pub spec upgrade
+
 Stop throwing reading file exception.
 
 ## [1.0.1]
@@ -26,8 +33,10 @@ Add capability to store and retrieve man up config.
 
 ### First major release
 
-Added Delegate support with `ManupDelegate`
+Added Delegate support with `ManUpDelegate`
+
 Added Helper Widget with `ManUpWidget`
+
 Check `README` file for full details.
 
 ## [0.0.3]
