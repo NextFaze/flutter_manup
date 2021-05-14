@@ -6,7 +6,7 @@ class ManUpService {
 
   final ConfigStorage fileStorage;
 
-  String os;
+  final String os;
   Metadata _manUpData = Metadata();
   // read platform data
   PlatformData? get configData => this.getPlatformData(os, _manUpData);
@@ -18,11 +18,12 @@ class ManUpService {
   ManUpService(
     this.url, {
     this.packageInfoProvider = const DefaultPackageInfoProvider(),
-    required this.os,
+    String? os,
     required http.Client http,
     ConfigStorage storage = const ConfigStorage(),
   })  : _client = http,
-        fileStorage = storage;
+        fileStorage = storage,
+        this.os = os ?? Platform.operatingSystem;
 
   Future<ManUpStatus> validate() async {
     delegate?.manUpConfigUpdateStarting();
