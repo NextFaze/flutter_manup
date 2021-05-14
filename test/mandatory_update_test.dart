@@ -377,8 +377,14 @@ void main() {
           http: client,
           os: osGetter(),
           storage: mockFileStorage);
+      // pre validation test
+      expect(service.configData, null);
+
+      ///
       var result = await service.validate();
+      // post validation test
       expect(result, ManUpStatus.latest);
+      expect(service.configData != null, true);
       //
       verify(mockFileStorage.readFile(filename: _manUpFile)).called(1);
     });
