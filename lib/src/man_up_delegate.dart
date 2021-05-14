@@ -1,8 +1,8 @@
 part of manup;
 
-/// `ManupDelegate` class has required methods.
-/// Default implemetation is in `ManupDelegateMixin` file.
-abstract class ManupDelegate {
+/// `ManUpDelegate` class has required methods.
+/// Default implementation is in `ManUpDelegateMixin` file.
+abstract class ManUpDelegate {
   void manUpStatusChanged(ManUpStatus status);
   void manUpConfigUpdateStarting();
   void manUpUpdateRequired();

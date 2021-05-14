@@ -1,7 +1,7 @@
 part of manup;
 
-/// Default implemetation of [ManupDelegate]
-mixin ManupDelegateMixin on ManupDelegate {
+/// Default implementation of [ManUpDelegate]
+mixin ManUpDelegateMixin on ManUpDelegate {
   void manUpStatusChanged(ManUpStatus status) {}
   void manUpConfigUpdateStarting() {}
   void manUpUpdateRequired() {}

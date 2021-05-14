@@ -51,10 +51,10 @@ service.close();
 
 ### Using the Service with Delegate
 
-Implement `ManupDelegate` or use `ManupDelegateMixin` mixin which has default implementation.
+Implement `ManUpDelegate` or use `ManUpDelegateMixin` mixin which has default implementation.
 
 - `manUpConfigUpdateStarting()` : will be called before starting to validate
-- `manupStatusChanged(ManUpStatus status)` : will be called every time status changes
+- `manUpStatusChanged(ManUpStatus status)` : will be called every time status changes
 - `manUpUpdateAvailable()` : will be called when ManUpStatus changes to supported
 - `manUpUpdateRequired()` : will be called when ManUpStatus changes to unsupported
 - `manUpMaintenanceMode()`: will be called when ManUpStatus changes to disabled
@@ -70,7 +70,7 @@ class ManUpExample extends StatefulWidget {
 }
 
 class _ManUpExampleState extends State<ManUpExample>
-    with ManupDelegate, ManupDelegateMixin, DialogMixin {
+    with ManUpDelegate, ManUpDelegateMixin, DialogMixin {
   ManUpService service;
   @override
   void initState() {
@@ -89,7 +89,7 @@ class _ManUpExampleState extends State<ManUpExample>
   @override
   void manUpStatusChanged(ManUpStatus status) {
     // handle status or show default dialog
-    showManupDialog(status, service.getMessage(forStatus: status),
+    showManUpDialog(status, service.getMessage(forStatus: status),
         service.configData.updateUrl);
   }
 
@@ -102,7 +102,9 @@ class _ManUpExampleState extends State<ManUpExample>
 ```
 
 ### Using the Service with Helper Widget
-Wrap your widget with `ManUpWidget` to automaticaly handle every thing.
+
+Wrap your widget with `ManUpWidget` to automatically handle every thing.
+
 ```dart
 @override
   Widget build(BuildContext context) {
@@ -116,7 +118,8 @@ Wrap your widget with `ManUpWidget` to automaticaly handle every thing.
     );
   }
 ```
+
 ### Exception Handling
 
 `validate` will throw a `ManUpException` if the lookup failed for any reason. Most likely, this will be caused
-by the device being offline and unable to retreive the metadata. It is up to you how you want to handle this in your app. Some apps, where a supported version is critical, should probably not run unless the version was validated successfully. However, for other apps, there's probably no problem and the app should continue running.
+by the device being offline and unable to retrieve the metadata. It is up to you how you want to handle this in your app. Some apps, where a supported version is critical, should probably not run unless the version was validated successfully. However, for other apps, there's probably no problem and the app should continue running.

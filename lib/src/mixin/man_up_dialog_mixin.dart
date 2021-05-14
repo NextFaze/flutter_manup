@@ -1,19 +1,19 @@
 part of manup;
 
-// Show app dialog based on manup status
+// Show app dialog based on manUp status
 mixin DialogMixin<T extends StatefulWidget> on State<T> {
   Future<bool> _launchUrl(String launchUrl) {
-    return canLaunch(launchUrl)
-        .then((canLaunch) => canLaunch ? launch(launchUrl) : false);
+    return canLaunch(launchUrl).then(
+        (canLaunch) => canLaunch ? launch(launchUrl) : Future.value(canLaunch));
   }
 
   // It will emit `true` if updateLater is selected
-  Future<bool> showManupDialog(
+  Future<bool> showManUpDialog(
     ManUpStatus status,
-    String message,
-    String updateUrl,
+    String? message,
+    String? updateUrl,
   ) async {
-    ManupAppDialog _dialog = ManupAppDialog();
+    ManUpAppDialog _dialog = ManUpAppDialog();
     switch (status) {
       case ManUpStatus.latest:
         return Future.value(true);
@@ -24,22 +24,21 @@ mixin DialogMixin<T extends StatefulWidget> on State<T> {
                 message: message,
                 trueText: "Update",
                 falseText: "Later")
-            .then(
-                (shouldUpdate) => shouldUpdate ? _launchUrl(updateUrl) : false)
-            .then((isLaunched) => !isLaunched);
+            .then((shouldUpdate) =>
+                shouldUpdate! ? _launchUrl(updateUrl!) : false)
+            .then((isLaunched) => !(isLaunched as bool));
       case ManUpStatus.unsupported:
         return _dialog
             .showAlertDialog(
                 context: context, message: message, trueText: "Update")
-            .then((_) => _launchUrl(updateUrl))
+            .then((_) => _launchUrl(updateUrl!))
             .then((_) => false);
 
       case ManUpStatus.disabled:
         return _dialog
             .showAlertDialog(context: context, message: message)
             .then((_) => exit(0))
-            .then((_) => false);
+            .then(((_) => false));
     }
-    throw ManUpException("Unknown manup status");
   }
 }
