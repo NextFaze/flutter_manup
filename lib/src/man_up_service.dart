@@ -7,7 +7,7 @@ class ManUpService {
   final ConfigStorage fileStorage;
 
   String os;
-  Metadata? _manUpData;
+  Metadata _manUpData = Metadata();
   // read platform data
   PlatformData? get configData => this.getPlatformData(os, _manUpData);
   ManUpDelegate? delegate;
@@ -39,8 +39,8 @@ class ManUpService {
 
   Future<ManUpStatus> _validate() async {
     PackageInfo info = await this.packageInfoProvider.getInfo();
-    _manUpData = await this.getMetadata();
-
+    final metadata = await this.getMetadata();
+    _manUpData = metadata;
     PlatformData? platformData = configData;
     //
     if (platformData == null) {
@@ -67,13 +67,10 @@ class ManUpService {
     }
   }
 
-  T? setting<T>({String? key}) => _manUpData?.setting<T>(key: key) ?? null;
+  T? setting<T>({String? key}) => _manUpData.setting<T>(key: key) ?? null;
 
   @visibleForTesting
-  PlatformData? getPlatformData(String os, Metadata? data) {
-    if (data == null) {
-      throw ManUpException('No data, validate must be called first.');
-    }
+  PlatformData? getPlatformData(String os, Metadata data) {
     if (os == 'ios') {
       return data.ios;
     } else if (os == 'android') {
@@ -123,15 +120,15 @@ class ManUpService {
     }
   }
 
-  String? getMessage({ManUpStatus? forStatus}) {
+  String getMessage({required ManUpStatus forStatus}) {
     switch (forStatus) {
       case ManUpStatus.supported:
-        return _manUpData?.supportedMessage;
+        return _manUpData.supportedMessage;
       case ManUpStatus.unsupported:
-        return _manUpData?.unsupportedMessage;
+        return _manUpData.unsupportedMessage;
       case ManUpStatus.disabled:
-        return _manUpData?.disabledMessage;
-      default:
+        return _manUpData.disabledMessage;
+      case ManUpStatus.latest:
         return "";
     }
   }
@@ -139,10 +136,10 @@ class ManUpService {
   /// manUp file storage
   Future<void> _storeManUpFile() async {
     try {
-      if (_manUpData == null || _manUpData?._data == null) {
+      if (_manUpData._data == null) {
         return;
       }
-      String json = jsonEncode(_manUpData!._data);
+      String json = jsonEncode(_manUpData._data);
       await fileStorage.storeFile(fileData: json);
     } catch (e) {
       print("cannot store file. $e");
