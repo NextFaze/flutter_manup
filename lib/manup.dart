@@ -14,6 +14,7 @@ part 'src/exception.dart';
 part 'src/metadata.dart';
 part 'src/man_up_status.dart';
 part 'src/man_up_service.dart';
+part 'src/man_up_validator.dart';
 part 'src/package_info_provider.dart';
 part 'src/man_up_delegate.dart';
 part 'src/ui/man_up_app_dialog.dart';
