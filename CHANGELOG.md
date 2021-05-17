@@ -1,5 +1,9 @@
 # manUp
 
+## [2.0.2]
+
+Separate manUp validator function to use it alone.
+
 ## [2.0.1]
 
 Minor code changes.
