@@ -68,7 +68,14 @@ class ManUpService {
     }
   }
 
-  T? setting<T>({String? key}) => _manUpData.setting<T>(key: key) ?? null;
+  T setting<T>({
+    required String key,
+    required T valueIfMissing,
+  }) =>
+      _manUpData.setting<T>(
+        key: key,
+        valueIfMissing: valueIfMissing,
+      );
 
   @visibleForTesting
   PlatformData? getPlatformData(String os, Metadata data) {

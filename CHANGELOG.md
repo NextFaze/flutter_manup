@@ -1,5 +1,9 @@
 # manUp
 
+## [2.0.3]
+
+Add default value if setting is missing
+
 ## [2.0.2]
 
 Separate manUp validator function to use it alone.
