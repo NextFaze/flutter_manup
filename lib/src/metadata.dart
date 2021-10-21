@@ -60,10 +60,10 @@ class Metadata {
 
   T setting<T>({
     required String key,
-    required T valueIfMissing,
+    required T orElse,
   }) {
     var value = rawSetting(key: key);
-    return value is T ? value : valueIfMissing;
+    return value is T ? value : orElse;
   }
 
   // Configuration file data
@@ -76,18 +76,18 @@ extension MetaDataMessages on Metadata {
   // version is supported but new update is available
   String get supportedMessage => setting<String>(
         key: 'supportedMessage',
-        valueIfMissing: 'There is an update available.',
+        orElse: 'There is an update available.',
       );
   // version is not supported, update required
   String get unsupportedMessage => setting<String>(
         key: 'unsupportedMessage',
-        valueIfMissing:
+        orElse:
             'This version is no longer supported. Please update to the latest version',
       );
   //maintenance mode
   String get disabledMessage => setting<String>(
         key: 'disabledMessage',
-        valueIfMissing:
+        orElse:
             'The app is currently in maintenance, please check again shortly',
       );
 }

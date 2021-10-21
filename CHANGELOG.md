@@ -1,8 +1,8 @@
 # manUp
 
-## [2.0.3]
+## [3.0.0]
 
-Add default value if setting is missing
+**Breaking changes** Add default value if setting is missing
 
 ## [2.0.2]
 

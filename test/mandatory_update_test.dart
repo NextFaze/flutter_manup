@@ -113,12 +113,10 @@ void main() {
         expect(metadata.rawSetting(key: "anything"), null);
         //
         expect(
-            metadata.setting<Map<String, dynamic>?>(
-                    key: "ios", valueIfMissing: null) !=
+            metadata.setting<Map<String, dynamic>?>(key: "ios", orElse: null) !=
                 null,
             true);
-        expect(
-            metadata.setting<String?>(key: "ios", valueIfMissing: null), null);
+        expect(metadata.setting<String?>(key: "ios", orElse: null), null);
       });
 
       test('Read custom properties from configuration', () async {
@@ -152,22 +150,15 @@ void main() {
 
         await service.validate();
         //
-        expect(
-            service.setting<String>(
-                key: "api-base", valueIfMissing: 'not-valid'),
+        expect(service.setting<String>(key: "api-base", orElse: 'not-valid'),
             "http://api.example.com/");
-        expect(
-            service.setting<int?>(key: "api-base", valueIfMissing: null), null);
+        expect(service.setting<int?>(key: "api-base", orElse: null), null);
 
-        expect(
-            service.setting<String?>(
-                key: "number-of-coins", valueIfMissing: null),
+        expect(service.setting<String?>(key: "number-of-coins", orElse: null),
             null);
-        expect(service.setting<int>(key: "number-of-coins", valueIfMissing: 0),
-            12);
+        expect(service.setting<int>(key: "number-of-coins", orElse: 0), 12);
         expect(
-            service.setting<int?>(key: "number-of-coin", valueIfMissing: null),
-            null);
+            service.setting<int?>(key: "number-of-coin", orElse: null), null);
       });
     });
 

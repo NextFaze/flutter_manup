@@ -70,11 +70,11 @@ class ManUpService {
 
   T setting<T>({
     required String key,
-    required T valueIfMissing,
+    required T orElse,
   }) =>
       _manUpData.setting<T>(
         key: key,
-        valueIfMissing: valueIfMissing,
+        orElse: orElse,
       );
 
   @visibleForTesting
