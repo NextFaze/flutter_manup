@@ -58,9 +58,12 @@ class Metadata {
   ///
   dynamic rawSetting({String? key}) => _data?[key] ?? null;
 
-  T? setting<T>({String? key}) {
+  T setting<T>({
+    required String key,
+    required T orElse,
+  }) {
     var value = rawSetting(key: key);
-    return value is T ? value : null;
+    return value is T ? value : orElse;
   }
 
   // Configuration file data
@@ -71,15 +74,20 @@ class Metadata {
 // message extension
 extension MetaDataMessages on Metadata {
   // version is supported but new update is available
-  String get supportedMessage =>
-      setting<String>(key: 'supportedMessage') ??
-      "There is an update available.";
+  String get supportedMessage => setting<String>(
+        key: 'supportedMessage',
+        orElse: 'There is an update available.',
+      );
   // version is not supported, update required
-  String get unsupportedMessage =>
-      setting<String>(key: 'unsupportedMessage') ??
-      "This version is no longer supported. Please update to the latest version";
+  String get unsupportedMessage => setting<String>(
+        key: 'unsupportedMessage',
+        orElse:
+            'This version is no longer supported. Please update to the latest version',
+      );
   //maintenance mode
-  String get disabledMessage =>
-      setting<String>(key: 'disabledMessage') ??
-      "The app is currently in maintenance, please check again shortly";
+  String get disabledMessage => setting<String>(
+        key: 'disabledMessage',
+        orElse:
+            'The app is currently in maintenance, please check again shortly',
+      );
 }
