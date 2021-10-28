@@ -119,7 +119,9 @@ void main() {
         expect(metadata.setting<String?>(key: "ios", orElse: null), null);
       });
 
-      test('Read custom properties from configuration', () async {
+      test(
+          'Read custom properties from configuration (using os specific first)',
+          () async {
         var packageInfo = MockPackageInfo("1.1.0");
         MockClient client;
         var response = http.Response('''
@@ -128,7 +130,8 @@ void main() {
               "latest": "2.4.1",
               "minimum": "2.1.0",
               "url": "http://example.com/myAppUpdate",
-              "enabled": true
+              "enabled": true,
+              "number-of-coins": 14
             },
             "android": {
               "latest": "2.5.1",
@@ -157,6 +160,9 @@ void main() {
         expect(service.setting<String?>(key: "number-of-coins", orElse: null),
             null);
         expect(service.setting<int>(key: "number-of-coins", orElse: 0), 12);
+        expect(
+            service.setting<int>(key: "number-of-coins", os: 'ios', orElse: 0),
+            14);
         expect(
             service.setting<int?>(key: "number-of-coin", orElse: null), null);
       });

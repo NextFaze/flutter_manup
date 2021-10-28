@@ -2,15 +2,15 @@ part of manup;
 
 /// Possible ManUp Status
 enum ManUpStatus {
-  /// This is the latest version
+  /// This is the latest version (current version >= latestVersion)
   latest,
 
-  /// This is a supported version
+  /// This is a supported version (currentVersion >= minimumVersion)
   supported,
 
-  /// This is an unsupported version
+  /// This is an unsupported version (currentVersion < minimumVersion)
   unsupported,
 
-  /// The app has been disabled for some reason
+  /// The app has been disabled for some reason (enabled is false in the config file)
   disabled,
 }

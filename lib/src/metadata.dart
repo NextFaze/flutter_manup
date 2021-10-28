@@ -54,13 +54,15 @@ class Metadata {
   PlatformData? get linux =>
       _data?['linux'] != null ? PlatformData.fromData(_data!['linux']) : null;
 
-  dynamic rawSetting({String? key}) => _data?[key] ?? null;
+  dynamic rawSetting({String? key, String? os}) =>
+      // try for the os specific value first
+      _data?[os ?? Platform.operatingSystem]?[key] ??
+      // Fall back to the root of the json file
+      _data?[key] ??
+      null;
 
-  T setting<T>({
-    required String key,
-    required T orElse,
-  }) {
-    var value = rawSetting(key: key);
+  T setting<T>({required String key, required T orElse, String? os}) {
+    var value = rawSetting(key: key, os: os);
     return value is T ? value : orElse;
   }
 
