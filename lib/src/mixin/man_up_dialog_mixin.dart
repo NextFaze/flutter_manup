@@ -2,9 +2,9 @@ part of manup;
 
 // Show app dialog based on manUp status
 mixin DialogMixin<T extends StatefulWidget> on State<T> {
-  Future<bool> _launchUrl(String launchUrl) {
-    return canLaunch(launchUrl).then(
-        (canLaunch) => canLaunch ? launch(launchUrl) : Future.value(canLaunch));
+  Future<bool> _launchUrl(String uri) {
+    return canLaunchUrl(Uri.parse(uri)).then((canLaunch) =>
+        canLaunch ? launchUrl(Uri.parse(uri)) : Future.value(canLaunch));
   }
 
   // It will emit `true` if updateLater is selected

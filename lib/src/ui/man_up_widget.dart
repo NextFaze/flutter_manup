@@ -35,7 +35,7 @@ class _ManUpWidgetState extends State<ManUpWidget>
     super.initState();
     widget.service.delegate = this;
     validateManUp();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -76,7 +76,7 @@ class _ManUpWidgetState extends State<ManUpWidget>
   @override
   void dispose() {
     widget.service.close();
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 }
