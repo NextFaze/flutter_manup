@@ -1,0 +1,34 @@
+name: 🚀 Release to pub.dev
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  job-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: subosito/flutter-action@v1
+      with:
+        channel: 'stable'
+
+    - name: 'Fetch packages'
+      run: flutter pub get
+
+    - name: Build generated files
+      run: flutter pub run build_runner build
+
+    - name: 'Analyze project'
+      run: flutter analyze
+      
+    - name: 'Run tests'
+      run: flutter test
+
+    - name: 'Publish'
+      uses: k-paxian/dart-package-publisher@master
+      with:
+        accessToken: ${{ secrets.PUB_DEV_ACCESS_TOKEN }}
+        refreshToken: ${{ secrets.PUB_DEV_REFRESH_TOKEN }}
+        dryRunOnly: true
