@@ -2,7 +2,8 @@
 
 ## [3.0.0]
 
-**Breaking changes** Add default value if setting is missing
+- **Breaking change** Add default value if setting is missing
+- **Breaking change** Update all dependencies
 
 ## [2.0.2]
 
