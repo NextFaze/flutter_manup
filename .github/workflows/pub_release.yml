@@ -33,6 +33,5 @@ jobs:
         # We ran manually above already
         skipTests: true
         suppressBuildRunner: true
-
-        accessToken: ${{ secrets.PUB_DEV_ACCESS_TOKEN }}
-        refreshToken: ${{ secrets.PUB_DEV_REFRESH_TOKEN }}
+        accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
+        refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
