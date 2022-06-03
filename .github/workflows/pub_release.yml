@@ -26,11 +26,12 @@ jobs:
     - name: 'Run tests'
       run: flutter test
 
+    - name: 'Setup Credentials'
+      run: |
+        mkdir -p ~/.config/dart/
+        cat <<EOF > ~/.config/dart/pub-credentials.json
+          ${{ secrets.CREDENTIAL_JSON }}
+        EOF
+
     - name: 'Publish'
-      uses: k-paxian/dart-package-publisher@master
-      with:
-        flutter: true
-        # We ran manually above already
-        skipTests: true
-        suppressBuildRunner: true
-        credentialJson: ${{ secrets.CREDENTIAL_JSON }}
+      run: flutter pub publish -f
