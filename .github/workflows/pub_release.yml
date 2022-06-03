@@ -30,7 +30,7 @@ jobs:
       run: |
         mkdir -p ~/.config/dart/
         cat <<EOF > ~/.config/dart/pub-credentials.json
-          ${{ secrets.CREDENTIAL_JSON }}
+          ${{ secrets.PUB_DEV_CREDENTIALS_JSON }}
         EOF
 
     - name: 'Publish'
