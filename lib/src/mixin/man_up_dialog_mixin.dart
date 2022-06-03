@@ -1,13 +1,13 @@
 part of manup;
 
-// Show app dialog based on manUp status
+/// Show app dialog based on manUp status
 mixin DialogMixin<T extends StatefulWidget> on State<T> {
   Future<bool> _launchUrl(String uri) {
     return canLaunchUrl(Uri.parse(uri)).then((canLaunch) =>
         canLaunch ? launchUrl(Uri.parse(uri)) : Future.value(canLaunch));
   }
 
-  // It will emit `true` if updateLater is selected
+  /// It will emit `true` if updateLater is selected
   Future<bool> showManUpDialog(
     ManUpStatus status,
     String? message,

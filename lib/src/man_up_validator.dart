@@ -1,9 +1,7 @@
 part of manup;
 
-///
 Future<ManUpStatus> validatePlatformData(
     {required String version, required PlatformData platformData}) async {
-  //
   if (!platformData.enabled) {
     return ManUpStatus.disabled;
   }

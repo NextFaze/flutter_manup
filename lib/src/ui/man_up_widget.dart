@@ -6,7 +6,7 @@ class ManUpWidget extends StatefulWidget {
   final bool Function() shouldShowAlert;
   final void Function(bool) onComplete;
   final ManUpStatus Function(dynamic) onError;
-  //
+
   ManUpWidget(
       {Key? key,
       required this.child,
@@ -20,8 +20,6 @@ class ManUpWidget extends StatefulWidget {
   _ManUpWidgetState createState() => _ManUpWidgetState();
 }
 
-///
-///
 class _ManUpWidgetState extends State<ManUpWidget>
     with
         ManUpDelegate,
@@ -29,7 +27,7 @@ class _ManUpWidgetState extends State<ManUpWidget>
         DialogMixin,
         WidgetsBindingObserver {
   bool isShowingManUpAlert = false;
-  //
+
   @override
   void initState() {
     super.initState();
@@ -45,9 +43,8 @@ class _ManUpWidgetState extends State<ManUpWidget>
     widget.service.validate().catchError((e) => widget.onError(e));
   }
 
-  // Man up
   bool get shouldShowManUpAlert => this.widget.shouldShowAlert.call();
-  // man up delegate
+
   @override
   void manUpStatusChanged(ManUpStatus status) {
     if (status == ManUpStatus.latest) {
@@ -72,7 +69,6 @@ class _ManUpWidgetState extends State<ManUpWidget>
     }
   }
 
-//
   @override
   void dispose() {
     widget.service.close();

@@ -3,7 +3,7 @@ part of manup;
 class ConfigStorage {
   const ConfigStorage();
   static const String _manUpFile = "man_up_config.json";
-  //
+
   Future<bool> storeFile(
       {String filename = _manUpFile, required String fileData}) {
     return getApplicationDocumentsDirectory().then((directory) {
