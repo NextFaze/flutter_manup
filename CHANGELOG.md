@@ -1,5 +1,10 @@
 # manUp
 
+## [3.1.0]
+
+- Custom settings can now be platform specific in addition to the root settings.
+- Add some extra documentation.
+
 ## [3.0.0]
 
 - **Breaking change** Add default value if setting is missing

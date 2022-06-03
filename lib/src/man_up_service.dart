@@ -24,6 +24,8 @@ class ManUpService {
         fileStorage = storage,
         this.os = os ?? Platform.operatingSystem;
 
+  /// Fetch the ManUp json file (after which settings can be retrieved using
+  /// [setting]) and return the calculated status.
   Future<ManUpStatus> validate() async {
     delegate?.manUpConfigUpdateStarting();
     try {
@@ -67,14 +69,22 @@ class ManUpService {
     }
   }
 
+  /// Retrieve an arbitrary setting key from your ManUp config json. Must have
+  /// run `validate()` first for this to work.
+  /// For example:
+  /// ```dart
+  /// final enableMyFeature = service.setting<bool>(key: 'myFeatureEnabled', orElse: false)
+  /// ```
+  ///
+  /// To pluck the 'myFeatureEnabled' key from your json file.
   T setting<T>({
     required String key,
     required T orElse,
+
+    /// Will default to current OS but you may want a setting from another os
+    String? os,
   }) =>
-      _manUpData.setting<T>(
-        key: key,
-        orElse: orElse,
-      );
+      _manUpData.setting<T>(key: key, orElse: orElse, os: os);
 
   @visibleForTesting
   PlatformData? getPlatformData(String os, Metadata data) {

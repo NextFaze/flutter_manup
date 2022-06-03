@@ -37,7 +37,7 @@ even though it means a little more work in maintaining the file.
 You can use `ManUpService` directly in your code. As part of your app startup logic, use the service to validate the running version.
 
 ```dart
-ManUpService service = ManUpService('https://example.com/manup.json');
+ManUpService service = ManUpService('https://example.com/manup.json', client: http.Client());
 ManUpStatus result = await service.validate();
 service.close();
 ```
@@ -48,6 +48,32 @@ service.close();
 - `supported`: The app is a supported version, but not the latest
 - `unsupported`: The app is an unsupported version and should not run
 - `disabled`: The app has been marked as disabled and should not run
+
+### Fetching other Settings and Feature Flags
+
+You may want to have other remote configuration in your ManUp file - such as
+feature flags. To fetch these settings you can use
+`service.setting(key:'myKey')` after successfully running `validate()` to load
+the config from the json file. By default, ManUp will look to the the current os
+for the key and fallback to the root:
+
+```json
+{
+  "ios": {
+    "latest": "2.4.1",
+    // ... other config
+    "myFeatureEnabled": true // <- used on iOS
+  },
+  "myFeatureEnabled": false // <- Fallback used for other platforms
+}
+```
+
+```dart
+// In this case will be `true` on iOS and `false` on Android/Web etc.
+final enableMyFeature = service.setting<bool>(key: 'myFeatureEnabled',
+// fallback value if getter fails for some reason
+  orElse: false);
+```
 
 ### Using the Service with Delegate
 
