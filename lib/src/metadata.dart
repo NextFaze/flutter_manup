@@ -54,8 +54,6 @@ class Metadata {
   PlatformData? get linux =>
       _data?['linux'] != null ? PlatformData.fromData(_data!['linux']) : null;
 
-  ///
-  ///
   dynamic rawSetting({String? key}) => _data?[key] ?? null;
 
   T setting<T>({
@@ -71,7 +69,6 @@ class Metadata {
   Metadata({Map<String, dynamic>? data}) : _data = data;
 }
 
-// message extension
 extension MetaDataMessages on Metadata {
   // version is supported but new update is available
   String get supportedMessage => setting<String>(
@@ -84,7 +81,7 @@ extension MetaDataMessages on Metadata {
         orElse:
             'This version is no longer supported. Please update to the latest version',
       );
-  //maintenance mode
+  // maintenance mode
   String get disabledMessage => setting<String>(
         key: 'disabledMessage',
         orElse:

@@ -8,13 +8,12 @@ class ManUpService {
 
   final String os;
   Metadata _manUpData = Metadata();
-  // read platform data
+
   PlatformData? get configData => this.getPlatformData(os, _manUpData);
   ManUpDelegate? delegate;
 
   final http.Client _client;
 
-  ///
   ManUpService(
     this.url, {
     this.packageInfoProvider = const DefaultPackageInfoProvider(),
@@ -160,7 +159,7 @@ class ManUpService {
     return Metadata(data: json);
   }
 
-  //call this on dispose.
+  /// call this on dispose.
   void close() {
     _client.close();
     this.delegate = null;
