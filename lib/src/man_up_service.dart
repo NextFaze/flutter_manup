@@ -46,7 +46,7 @@ class ManUpService {
     PlatformData? platformData = configData;
     //
     if (platformData == null) {
-      return ManUpStatus.unsupported;
+      return ManUpStatus.latest;
     }
     if (!platformData.enabled) {
       return ManUpStatus.disabled;
