@@ -1,5 +1,9 @@
 # manUp
 
+## [4.0.0]
+
+- **Breaking change** Added ability to continue without overlay if platform is not defined within json file.
+
 ## [3.1.1]
 
 - Bump url launcher dependency (method call was updated for linting errors but the method was only added in 6.1.0 and does not exist in 6.0.x)
