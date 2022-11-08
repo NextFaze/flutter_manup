@@ -1,5 +1,9 @@
 # manUp
 
+## [4.0.1]
+
+- Update all dependencies
+
 ## [4.0.0]
 
 - **Breaking change** Added ability to continue without overlay if platform is not defined within json file.
