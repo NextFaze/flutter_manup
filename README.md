@@ -33,10 +33,10 @@ even though it means a little more work in maintaining the file.
 ```
 
 - `"ios" or "android : <string>` - device operating system
-- `latest : <string>` - the latest application version
-- `minimum : <string>` - the minimum required application version
-- `ur : <string>` - url of where to download application update
-- `enabled : <bool>` - whether or not the application is enabled
+- `latest : <string>` - the latest application version - running a lower version prompts to update (based on `url`)
+- `minimum : <string>` - the minimum required application version - running a lower version prevents the app from running (prompting to update based on `url`)
+- `url : <string>` - url of where to download application update
+- `enabled : <bool>` - whether or not the application is enabled - `false` completely prevents app use
 
 If `"ios"` or `"android"` configurations are omitted, it will treat the device as having the latest version of the app installed.
 
