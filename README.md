@@ -85,48 +85,6 @@ Implement `ManUpDelegate` or use `ManUpDelegateMixin` mixin which has default im
 - `manUpUpdateRequired()` : will be called when ManUpStatus changes to unsupported
 - `manUpMaintenanceMode()`: will be called when ManUpStatus changes to disabled
 
-## Example
-
-```dart
-class ManUpExample extends StatefulWidget {
-  ManUpExample({Key key}) : super(key: key);
-
-  @override
-  _ManUpExampleState createState() => _ManUpExampleState();
-}
-
-class _ManUpExampleState extends State<ManUpExample>
-    with ManUpDelegate, ManUpDelegateMixin, DialogMixin {
-  ManUpService service;
-  @override
-  void initState() {
-    super.initState();
-    service = ManUpService("https://example.com/manup.json",
-        http: http.Client(), os: Platform.operatingSystem);
-    service.delegate = this;
-    service.validate();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-
-  @override
-  void manUpStatusChanged(ManUpStatus status) {
-    // handle status or show default dialog
-    showManUpDialog(status, service.getMessage(forStatus: status),
-        service.configData.updateUrl);
-  }
-
-  @override
-  void dispose() {
-    service?.close();
-    super.dispose();
-  }
-}
-```
-
 ### Using the Service with Helper Widget
 
 Wrap your widget with `ManUpWidget` to automatically handle every thing.

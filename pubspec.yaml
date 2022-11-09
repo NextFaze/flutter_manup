@@ -1,6 +1,6 @@
 name: manup
-description: Mandatory update for Flutter Apps.
-version: 4.0.1
+description: Mandatory update for Flutter Apps that prompts or forces app update by querying a hosted JSON file.
+version: 4.0.2
 homepage: https://github.com/NextFaze/flutter_manup
 
 environment:

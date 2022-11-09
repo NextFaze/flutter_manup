@@ -1,5 +1,10 @@
 # manUp
 
+## [4.0.2]
+
+- Move example to example directory
+- Update description to follow dart conventions
+
 ## [4.0.1]
 
 - Update all dependencies
