@@ -32,6 +32,14 @@ even though it means a little more work in maintaining the file.
 }
 ```
 
+- `"ios" or "android : <string>` - device operating system
+- `latest : <string>` - the latest application version
+- `minimum : <string>` - the minimum required application version
+- `ur : <string>` - url of where to download application update
+- `enabled : <bool>` - whether or not the application is enabled
+
+If `"ios"` or `"android"` configurations are omitted, it will treat the device as having the latest version of the app installed.
+
 ### Using the Service Directly
 
 You can use `ManUpService` directly in your code. As part of your app startup logic, use the service to validate the running version.
