@@ -32,6 +32,14 @@ even though it means a little more work in maintaining the file.
 }
 ```
 
+- `"ios" or "android : <string>` - device operating system
+- `latest : <string>` - the latest application version - running a lower version prompts to update (based on `url`)
+- `minimum : <string>` - the minimum required application version - running a lower version prevents the app from running (prompting to update based on `url`)
+- `url : <string>` - url of where to download application update
+- `enabled : <bool>` - whether or not the application is enabled - `false` completely prevents app use
+
+If `"ios"` or `"android"` configurations are omitted, it will treat the device as having the latest version of the app installed.
+
 ### Using the Service Directly
 
 You can use `ManUpService` directly in your code. As part of your app startup logic, use the service to validate the running version.
@@ -84,48 +92,6 @@ Implement `ManUpDelegate` or use `ManUpDelegateMixin` mixin which has default im
 - `manUpUpdateAvailable()` : will be called when ManUpStatus changes to supported
 - `manUpUpdateRequired()` : will be called when ManUpStatus changes to unsupported
 - `manUpMaintenanceMode()`: will be called when ManUpStatus changes to disabled
-
-## Example
-
-```dart
-class ManUpExample extends StatefulWidget {
-  ManUpExample({Key key}) : super(key: key);
-
-  @override
-  _ManUpExampleState createState() => _ManUpExampleState();
-}
-
-class _ManUpExampleState extends State<ManUpExample>
-    with ManUpDelegate, ManUpDelegateMixin, DialogMixin {
-  ManUpService service;
-  @override
-  void initState() {
-    super.initState();
-    service = ManUpService("https://example.com/manup.json",
-        http: http.Client(), os: Platform.operatingSystem);
-    service.delegate = this;
-    service.validate();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-
-  @override
-  void manUpStatusChanged(ManUpStatus status) {
-    // handle status or show default dialog
-    showManUpDialog(status, service.getMessage(forStatus: status),
-        service.configData.updateUrl);
-  }
-
-  @override
-  void dispose() {
-    service?.close();
-    super.dispose();
-  }
-}
-```
 
 ### Using the Service with Helper Widget
 

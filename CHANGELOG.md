@@ -1,5 +1,11 @@
 # manUp
 
+## [4.0.2]
+
+- Move example to example directory
+- Update description to follow dart conventions
+- Added JSON file property descriptions and data types
+
 ## [4.0.1]
 
 - Update all dependencies
