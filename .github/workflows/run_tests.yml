@@ -3,25 +3,24 @@ name: 🛠 Build and Test
 on: [push]
 
 jobs:
-
   job-tests:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-    - uses: subosito/flutter-action@v1
-      with:
-        channel: 'stable'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
 
-    - name: 'Fetch packages'
-      run: flutter pub get
+      - name: 'Fetch packages'
+        run: flutter pub get
 
-    - name: Build generated files
-      run: flutter pub run build_runner build
+      - name: Build generated files
+        run: flutter pub run build_runner build
 
-    - name: 'Analyze project'
-      run: flutter analyze
-      
-    - name: 'Run tests'
-      run: flutter test
+      - name: 'Analyze project'
+        run: flutter analyze
+
+      - name: 'Run tests'
+        run: flutter test
