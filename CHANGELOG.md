@@ -1,5 +1,9 @@
 # manUp
 
+## [5.0.1]
+
+- Use less strict http version
+
 ## [5.0.0]
 
 - **Breaking change** Update http to `1.x.y` and package_info_plus to `4.x.x`
