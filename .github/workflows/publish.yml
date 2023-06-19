@@ -1,10 +1,14 @@
-name: 🚀 Release to pub.dev
+name: Publish to pub.dev
 
-on: 
-  workflow_dispatch:
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
   job-release:
+    permissions:
+      id-token: write # This is required for authentication using OIDC
     timeout-minutes: 30
     runs-on: ubuntu-latest
 
@@ -15,11 +19,13 @@ jobs:
       with:
         channel: 'stable'
 
+    - uses: dart-lang/setup-dart@v1
+
     - name: 'Fetch packages'
-      run: flutter pub get
+      run: dart pub get
 
     - name: Build generated files
-      run: flutter pub run build_runner build
+      run: dart run build_runner build
 
     - name: 'Analyze project'
       run: flutter analyze
@@ -27,12 +33,5 @@ jobs:
     - name: 'Run tests'
       run: flutter test
 
-    - name: 'Setup Credentials'
-      run: |
-        mkdir -p ~/.config/dart/
-        cat <<EOF > ~/.config/dart/pub-credentials.json
-          ${{ secrets.PUB_DEV_CREDENTIALS_JSON }}
-        EOF
-
     - name: 'Publish'
-      run: flutter pub publish -f
+      run: dart pub publish --force
