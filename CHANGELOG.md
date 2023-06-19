@@ -1,5 +1,11 @@
 # manUp
 
+## [5.0.0]
+
+- **Breaking change** Update http to `1.x.y` and package_info_plus to `4.x.x`
+  - A result of this (due to `package_info_plus` update) is now minimum Android API 19 and iOS version 11
+  - See the respective packages for any further breaking changes
+
 ## [4.0.2]
 
 - Move example to example directory
