@@ -12,12 +12,13 @@ Future<ManUpStatus> validatePlatformData(
         VersionConstraint.parse('>=${platformData.latestVersion}');
     VersionConstraint minVersion =
         VersionConstraint.parse('>=${platformData.minVersion}');
-    if (latestVersion.allows(currentVersion)) {
-      return ManUpStatus.latest;
-    } else if (minVersion.allows(currentVersion)) {
+    if (!minVersion.allows(currentVersion)) {
+      return ManUpStatus.unsupported;
+    }
+    if (!latestVersion.allows(currentVersion)) {
       return ManUpStatus.supported;
     }
-    return ManUpStatus.unsupported;
+    return ManUpStatus.latest;
   } catch (exception) {
     throw ManUpException(exception.toString());
   }
