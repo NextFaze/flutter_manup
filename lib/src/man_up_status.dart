@@ -2,10 +2,11 @@ part of manup;
 
 /// Possible ManUp Status
 enum ManUpStatus {
-  /// This is the latest version (current version >= latestVersion)
+  /// This is the latest version available (current version >= latestVersion)
   latest,
 
-  /// This is a supported version (currentVersion >= minimumVersion)
+  /// This is a supported version (currentVersion >= minimumVersion) but a newer
+  /// version is available.
   supported,
 
   /// This is an unsupported version (currentVersion < minimumVersion)

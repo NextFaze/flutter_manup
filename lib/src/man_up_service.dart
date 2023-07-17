@@ -20,9 +20,10 @@ class ManUpService {
     String? os,
     required http.Client http,
     ConfigStorage storage = const ConfigStorage(),
+    this.delegate,
   })  : _client = http,
         fileStorage = storage,
-        this.os = os ?? Platform.operatingSystem;
+        this.os = os ?? manupOS();
 
   /// Fetch the ManUp json file (after which settings can be retrieved using
   /// [setting]) and return the calculated status.
@@ -99,6 +100,10 @@ class ManUpService {
     } else if (os == 'linux') {
       return data.linux;
     }
+    if (os == 'web') {
+      return data.web;
+    }
+
     throw ManUpException('Platform not supported');
   }
 
@@ -110,6 +115,7 @@ class ManUpService {
       Map<String, dynamic>? json = jsonDecode(data.body);
       return Metadata(data: json);
     } catch (exception) {
+      if (kIsWeb) throw exception;
       try {
         var metadata = await _readManUpFile();
         return metadata;
@@ -152,6 +158,7 @@ class ManUpService {
 
   /// manUp file storage
   Future<void> _storeManUpFile() async {
+    if (kIsWeb) return;
     try {
       if (_manUpData._data == null) {
         return;

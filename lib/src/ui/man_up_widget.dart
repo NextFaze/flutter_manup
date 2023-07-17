@@ -5,7 +5,7 @@ class ManUpWidget extends StatefulWidget {
   final Widget child;
   final bool Function() shouldShowAlert;
   final void Function(bool) onComplete;
-  final ManUpStatus Function(dynamic) onError;
+  final void Function(dynamic) onError;
 
   ManUpWidget(
       {Key? key,
@@ -39,8 +39,12 @@ class _ManUpWidgetState extends State<ManUpWidget>
   @override
   Widget build(BuildContext context) => widget.child;
 
-  validateManUp() {
-    widget.service.validate().catchError((e) => widget.onError(e));
+  validateManUp() async {
+    try {
+      await widget.service.validate();
+    } catch (error) {
+      widget.onError(error);
+    }
   }
 
   bool get shouldShowManUpAlert => this.widget.shouldShowAlert.call();
@@ -52,7 +56,7 @@ class _ManUpWidgetState extends State<ManUpWidget>
       return;
     }
     final updateUrl = widget.service.configData?.updateUrl;
-    if (this.shouldShowManUpAlert && updateUrl != null) {
+    if (this.shouldShowManUpAlert) {
       final message = widget.service.getMessage(forStatus: status);
       isShowingManUpAlert = true;
       showManUpDialog(status, message, updateUrl)
