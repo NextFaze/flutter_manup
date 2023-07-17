@@ -12,13 +12,13 @@ class PlatformData {
   final bool enabled;
 
   /// The URL for update information (eg app store url)
-  final String updateUrl;
+  final String? updateUrl;
 
   PlatformData(
       {required this.minVersion,
       required this.latestVersion,
       required this.enabled,
-      required this.updateUrl});
+      this.updateUrl});
 
   @visibleForTesting
   static PlatformData fromData(Map<String, dynamic> data) {
@@ -54,9 +54,13 @@ class Metadata {
   PlatformData? get linux =>
       _data?['linux'] != null ? PlatformData.fromData(_data!['linux']) : null;
 
+  /// web specific configuration
+  PlatformData? get web =>
+      _data?['web'] != null ? PlatformData.fromData(_data!['web']) : null;
+
   dynamic rawSetting({String? key, String? os}) =>
       // try for the os specific value first
-      _data?[os ?? Platform.operatingSystem]?[key] ??
+      _data?[os ?? manupOS()]?[key] ??
       // Fall back to the root of the json file
       _data?[key] ??
       null;

@@ -3,7 +3,7 @@ part of manup;
 class ManUpAppDialog {
   Future<bool?> showAlertDialog(
       {String? message,
-      String trueText = "ok",
+      String trueText = "OK",
       String? falseText,
       bool barrierDismissible = false,
       required BuildContext context}) {
