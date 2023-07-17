@@ -5,6 +5,8 @@
 - **Breaking change** Update version check logic
   - Previously, if the app version was higher than the latest version, the minVersion check was effectively ignored.
   - Now, all version checks are run individually and `latest` is only returned if everything passes.
+- Add initial support for web platform
+  - Running on web now looks for the `web` key in the `manup.json` file instead of outright failing
 
 ## [5.0.1]
 
