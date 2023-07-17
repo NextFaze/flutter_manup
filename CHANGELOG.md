@@ -1,5 +1,11 @@
 # manUp
 
+## [6.0.0]
+
+- **Breaking change** Update version check logic
+  - Previously, if the app version was higher than the latest version, the minVersion check was effectively ignored.
+  - Now, all version checks are run individually and `latest` is only returned if everything passes.
+
 ## [5.0.1]
 
 - Use less strict http version
