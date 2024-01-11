@@ -1,14 +1,15 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:http/testing.dart';
-import 'package:mockito/annotations.dart';
 import 'dart:convert';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:mockito/mockito.dart';
+
+import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:http/testing.dart';
 import 'package:manup/manup.dart';
+import 'package:manup/src/http_man_up_service.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-import 'mandatory_update_test.mocks.dart' as Mocks;
+import 'http_man_up_service_test.mocks.dart' as Mocks;
 
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
@@ -38,7 +39,7 @@ class MockPackageInfo extends PackageInfoProvider {
 // Create new instances of this class in each test.
 @GenerateMocks([ConfigStorage])
 void main() {
-  group('ManUpService', () {
+  group('HttpManUpService', () {
     final mockFileStorage = Mocks.MockConfigStorage();
 
     test('parseJson converts to a PlatformData object', () {
@@ -84,7 +85,7 @@ void main() {
           }
           ''', 200);
         client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+        var service = HttpManUpService('https://example.com/manup.json',
             http: client, os: osGetter(), storage: mockFileStorage);
 
         var metadata = await service.getMetadata();
@@ -145,7 +146,7 @@ void main() {
           ''', 200);
         client = MockClient((r) => Future.value(response));
 
-        var service = ManUpService('https://example.com/manup.json',
+        var service = HttpManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo,
             http: client,
             os: osGetter(),
@@ -189,7 +190,7 @@ void main() {
           }
           ''', 200);
         client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+        var service = HttpManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo,
             http: client,
             os: osGetter(),
@@ -217,7 +218,7 @@ void main() {
           }
           ''', 200);
         client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+        var service = HttpManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo,
             http: client,
             os: osGetter(),
@@ -240,7 +241,7 @@ void main() {
           }
           ''', 200);
         client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+        var service = HttpManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo,
             http: client,
             os: osGetter(),
@@ -262,7 +263,7 @@ void main() {
           }
           ''', 200);
         var client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+        var service = HttpManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo,
             http: client,
             os: osGetter(),
@@ -283,7 +284,7 @@ void main() {
           }
           ''', 200);
         var client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+        var service = HttpManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo,
             http: client,
             os: osGetter(),
@@ -305,7 +306,7 @@ void main() {
           ''', 200);
         var client = MockClient((r) => Future.value(response));
 
-        var service = ManUpService('https://example.com/manup.json',
+        var service = HttpManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo,
             http: client,
             os: osGetter(),
@@ -317,7 +318,7 @@ void main() {
         var packageInfo = MockPackageInfo("2.4.1");
         var client = MockClient((r) => Future.error(Exception("text error")));
 
-        var service = ManUpService('https://example.com/manup.json',
+        var service = HttpManUpService('https://example.com/manup.json',
             packageInfoProvider: packageInfo,
             http: client,
             os: osGetter(),
@@ -326,7 +327,7 @@ void main() {
       });
     });
   });
-  group("ManUpService: store service", () {
+  group("HttpManUpService: store service", () {
     final mockFileStorage = Mocks.MockConfigStorage();
 
     test('store file should get call', () async {
@@ -348,7 +349,7 @@ void main() {
           ''', 200);
       var client = MockClient((r) => Future.value(response));
 
-      var service = ManUpService('https://example.com/manup.json',
+      var service = HttpManUpService('https://example.com/manup.json',
           packageInfoProvider: packageInfo,
           http: client,
           os: osGetter(),
@@ -382,7 +383,7 @@ void main() {
       var packageInfo = MockPackageInfo("2.4.1");
       var response = http.Response('', 500);
       var client = MockClient((r) => Future.value(response));
-      var service = ManUpService('https://example.com/manup.json',
+      var service = HttpManUpService('https://example.com/manup.json',
           packageInfoProvider: packageInfo,
           http: client,
           os: osGetter(),

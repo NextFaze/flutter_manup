@@ -1,36 +1,31 @@
 part of manup;
 
-class ManUpService {
-  final String url;
+abstract class ManUpService {
   final PackageInfoProvider packageInfoProvider;
 
   final ConfigStorage fileStorage;
 
-  final String os;
+  final String? os;
   Metadata _manUpData = Metadata();
 
-  PlatformData? get configData => this.getPlatformData(os, _manUpData);
+  PlatformData? get configData =>
+      os != null ? this.getPlatformData(os!, _manUpData) : null;
   ManUpDelegate? delegate;
 
-  final http.Client _client;
-
-  ManUpService(
-    this.url, {
+  ManUpService({
     this.packageInfoProvider = const DefaultPackageInfoProvider(),
     String? os,
-    required http.Client http,
     ConfigStorage storage = const ConfigStorage(),
     this.delegate,
-  })  : _client = http,
-        fileStorage = storage,
+  })  : fileStorage = storage,
         this.os = os ?? manupOS();
 
   /// Fetch the ManUp json file (after which settings can be retrieved using
   /// [setting]) and return the calculated status.
-  Future<ManUpStatus> validate() async {
+  Future<ManUpStatus> validate([Metadata? metadata]) async {
     delegate?.manUpConfigUpdateStarting();
     try {
-      ManUpStatus status = await _validate();
+      ManUpStatus status = await _validate(metadata);
       this._handleManUpStatus(status);
       return status;
     } catch (e) {
@@ -40,12 +35,12 @@ class ManUpService {
     }
   }
 
-  Future<ManUpStatus> _validate() async {
+  Future<ManUpStatus> _validate([Metadata? metadata]) async {
     PackageInfo info = await this.packageInfoProvider.getInfo();
-    final metadata = await this.getMetadata();
+    metadata ??= await this.getMetadata();
     _manUpData = metadata;
     PlatformData? platformData = configData;
-    //
+
     if (platformData == null) {
       return ManUpStatus.latest;
     }
@@ -108,22 +103,7 @@ class ManUpService {
   }
 
   @visibleForTesting
-  Future<Metadata> getMetadata() async {
-    try {
-      final uri = Uri.parse(this.url);
-      var data = await _client.get(uri);
-      Map<String, dynamic>? json = jsonDecode(data.body);
-      return Metadata(data: json);
-    } catch (exception) {
-      if (kIsWeb) throw exception;
-      try {
-        var metadata = await _readManUpFile();
-        return metadata;
-      } catch (e) {
-        throw ManUpException(exception.toString());
-      }
-    }
-  }
+  Future<Metadata> getMetadata();
 
   // manUp status validation
   void _handleManUpStatus(ManUpStatus status) {
@@ -170,7 +150,8 @@ class ManUpService {
     }
   }
 
-  Future<Metadata> _readManUpFile() async {
+  @protected
+  Future<Metadata> readManUpFile() async {
     var data = await fileStorage.readFile();
     Map<String, dynamic>? json = jsonDecode(data);
     return Metadata(data: json);
@@ -178,7 +159,7 @@ class ManUpService {
 
   /// call this on dispose.
   void close() {
-    _client.close();
+    // _client.close();
     this.delegate = null;
   }
 }
