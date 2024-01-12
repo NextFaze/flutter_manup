@@ -1,8 +1,4 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart';
-import 'package:manup/manup.dart';
+part of manup;
 
 class HttpManUpService extends ManUpService {
   final String url;
