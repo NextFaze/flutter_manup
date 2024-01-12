@@ -12,8 +12,8 @@ class ManUpAppDialog {
         barrierDismissible: barrierDismissible,
         context: context,
         builder: (BuildContext context) {
-          return WillPopScope(
-            onWillPop: () => Future.value(barrierDismissible),
+          return PopScope(
+            onPopInvoked: (didPop) => Future.value(barrierDismissible),
             child: AlertDialog(
               title: Text(message ?? ""),
               actions: <Widget>[
