@@ -11,8 +11,8 @@ ios/Runner/GeneratedPluginRegistrant.*
 android/local.properties
 .vscode
 coverage
-test/mandatory_update_test.mocks.dart
-
+test/http_man_up_service_test.mocks.dart
+test/firebase_remote_config_man_up_service_test.mocks.dart
 # Flutter/Dart/Pub related
 **/doc/api/
 .dart_tool/

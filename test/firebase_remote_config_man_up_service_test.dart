@@ -1,14 +1,14 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:http/testing.dart';
-import 'package:mockito/annotations.dart';
 import 'dart:convert';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:mockito/mockito.dart';
-import 'package:http/http.dart' as http;
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:manup/manup.dart';
+import 'package:manup/src/firebase_remote_config_man_up_service.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-import 'mandatory_update_test.mocks.dart' as Mocks;
+import 'firebase_remote_config_man_up_service_test.mocks.dart' as Mocks;
+import 'mock_remote_config.dart';
 
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
@@ -38,7 +38,7 @@ class MockPackageInfo extends PackageInfoProvider {
 // Create new instances of this class in each test.
 @GenerateMocks([ConfigStorage])
 void main() {
-  group('ManUpService', () {
+  group('FireBaseRemoteConfigManUpService', () {
     final mockFileStorage = Mocks.MockConfigStorage();
 
     test('parseJson converts to a PlatformData object', () {
@@ -58,16 +58,14 @@ void main() {
     });
 
     group('getMetadata', () {
-      http.Client client;
-
       setUp(() {
         when(mockFileStorage.storeFile(
                 filename: _manUpFile, fileData: anyNamed('fileData')))
             .thenAnswer((_) => Future.value(true));
       });
 
-      test('It fetches and returns metadata', () async {
-        var response = http.Response('''
+      test('It fetches and returns metadata from remote config', () async {
+        var response = '''
           {
             "ios": {
               "latest": "2.4.1",
@@ -82,10 +80,17 @@ void main() {
               "enabled": false 
             }
           }
-          ''', 200);
-        client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
-            http: client, os: osGetter(), storage: mockFileStorage);
+          ''';
+
+        MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+          responseJsonString: response,
+        );
+
+        var service = FireBaseRemoteConfigManUpService(
+            remoteConfig: remoteConfig,
+            os: osGetter(),
+            storage: mockFileStorage,
+            paramName: '');
 
         var metadata = await service.getMetadata();
 
@@ -123,8 +128,7 @@ void main() {
           'Read custom properties from configuration (using os specific first)',
           () async {
         var packageInfo = MockPackageInfo("1.1.0");
-        MockClient client;
-        var response = http.Response('''
+        var response = '''
           {
             "ios": {
               "latest": "2.4.1",
@@ -142,14 +146,18 @@ void main() {
             "api-base": "http://api.example.com/",
             "number-of-coins": 12
           }
-          ''', 200);
-        client = MockClient((r) => Future.value(response));
+          ''';
 
-        var service = ManUpService('https://example.com/manup.json',
+        MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+          responseJsonString: response,
+        );
+
+        var service = FireBaseRemoteConfigManUpService(
+            remoteConfig: remoteConfig,
             packageInfoProvider: packageInfo,
-            http: client,
             os: osGetter(),
-            storage: mockFileStorage);
+            storage: mockFileStorage,
+            paramName: '');
 
         await service.validate();
         //
@@ -171,8 +179,7 @@ void main() {
     group("validate", () {
       test('an unsupported version', () async {
         var packageInfo = MockPackageInfo("1.1.0");
-        var client;
-        var response = http.Response('''
+        var response = '''
           {
             "ios": {
               "latest": "2.4.1",
@@ -187,20 +194,25 @@ void main() {
               "enabled": false 
             }
           }
-          ''', 200);
-        client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+          ''';
+
+        MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+          responseJsonString: response,
+        );
+
+        var service = FireBaseRemoteConfigManUpService(
+            remoteConfig: remoteConfig,
             packageInfoProvider: packageInfo,
-            http: client,
             os: osGetter(),
-            storage: mockFileStorage);
+            storage: mockFileStorage,
+            paramName: '');
+
         var result = await service.validate();
         expect(result, ManUpStatus.unsupported);
       });
       test('the minimum version version', () async {
         var packageInfo = MockPackageInfo("2.1.0");
-        var client;
-        var response = http.Response('''
+        var response = '''
           {
             "ios": {
               "latest": "2.4.1",
@@ -215,21 +227,25 @@ void main() {
               "enabled": false 
             }
           }
-          ''', 200);
-        client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+          ''';
+
+        MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+          responseJsonString: response,
+        );
+
+        var service = FireBaseRemoteConfigManUpService(
+            remoteConfig: remoteConfig,
             packageInfoProvider: packageInfo,
-            http: client,
             os: osGetter(),
-            storage: mockFileStorage);
+            storage: mockFileStorage,
+            paramName: '');
 
         var result = await service.validate();
         expect(result, ManUpStatus.supported);
       });
       test('some supported version', () async {
         var packageInfo = MockPackageInfo("2.3.3");
-        var client;
-        var response = http.Response('''
+        var response = '''
           {
             "ios": {
               "latest": "2.4.1",
@@ -238,20 +254,25 @@ void main() {
               "enabled": true
             }
           }
-          ''', 200);
-        client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+          ''';
+
+        MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+          responseJsonString: response,
+        );
+
+        var service = FireBaseRemoteConfigManUpService(
+            remoteConfig: remoteConfig,
             packageInfoProvider: packageInfo,
-            http: client,
             os: osGetter(),
-            storage: mockFileStorage);
+            storage: mockFileStorage,
+            paramName: '');
 
         var result = await service.validate();
         expect(result, ManUpStatus.supported);
       });
       test('the latest version', () async {
         var packageInfo = MockPackageInfo("2.4.1");
-        var response = http.Response('''
+        var response = '''
           {
             "ios": {
               "latest": "2.4.1",
@@ -260,19 +281,26 @@ void main() {
               "enabled": true
             }
           }
-          ''', 200);
-        var client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+          ''';
+
+        MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+          responseJsonString: response,
+        );
+
+        var service = FireBaseRemoteConfigManUpService(
+            remoteConfig: remoteConfig,
             packageInfoProvider: packageInfo,
-            http: client,
             os: osGetter(),
-            storage: mockFileStorage);
+            storage: mockFileStorage,
+            paramName: '');
         var result = await service.validate();
+
         expect(result, ManUpStatus.latest);
       });
       test('allow greater than latest version', () async {
         var packageInfo = MockPackageInfo("3.4.1");
-        var response = http.Response('''
+
+        var response = '''
           {
             "ios": {
               "latest": "2.4.1",
@@ -281,19 +309,26 @@ void main() {
               "enabled": true
             }
           }
-          ''', 200);
-        var client = MockClient((r) => Future.value(response));
-        var service = ManUpService('https://example.com/manup.json',
+          ''';
+
+        MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+          responseJsonString: response,
+        );
+
+        var service = FireBaseRemoteConfigManUpService(
+            remoteConfig: remoteConfig,
             packageInfoProvider: packageInfo,
-            http: client,
             os: osGetter(),
-            storage: mockFileStorage);
+            storage: mockFileStorage,
+            paramName: '');
+
         var result = await service.validate();
+
         expect(result, ManUpStatus.latest);
       });
       test('marked as disabled', () async {
         var packageInfo = MockPackageInfo("2.4.1");
-        var response = http.Response('''
+        var response = '''
           {
             "ios": {
               "latest": "2.4.1",
@@ -302,31 +337,38 @@ void main() {
               "enabled": false 
             }
           }
-          ''', 200);
-        var client = MockClient((r) => Future.value(response));
+          ''';
 
-        var service = ManUpService('https://example.com/manup.json',
+        MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+          responseJsonString: response,
+        );
+
+        var service = FireBaseRemoteConfigManUpService(
+            remoteConfig: remoteConfig,
             packageInfoProvider: packageInfo,
-            http: client,
             os: osGetter(),
-            storage: mockFileStorage);
+            storage: mockFileStorage,
+            paramName: '');
+
         var result = await service.validate();
         expect(result, ManUpStatus.disabled);
       });
       test('throws an exception if the lookup failed', () async {
         var packageInfo = MockPackageInfo("2.4.1");
-        var client = MockClient((r) => Future.error(Exception("text error")));
 
-        var service = ManUpService('https://example.com/manup.json',
+        MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig();
+        var service = FireBaseRemoteConfigManUpService(
+            remoteConfig: remoteConfig,
             packageInfoProvider: packageInfo,
-            http: client,
             os: osGetter(),
-            storage: mockFileStorage);
+            storage: mockFileStorage,
+            paramName: '');
+
         expect(() => service.validate(), throwsException);
       });
     });
   });
-  group("ManUpService: store service", () {
+  group("FireBaseRemoteConfigManUpService: store service", () {
     final mockFileStorage = Mocks.MockConfigStorage();
 
     test('store file should get call', () async {
@@ -336,7 +378,7 @@ void main() {
           .thenAnswer((_) => Future.value(true));
 
       var packageInfo = MockPackageInfo("2.4.1");
-      var response = http.Response('''
+      var response = '''
           {
             "ios": {
               "latest": "2.4.1",
@@ -345,14 +387,17 @@ void main() {
               "enabled": true
             }
           }
-          ''', 200);
-      var client = MockClient((r) => Future.value(response));
+          ''';
 
-      var service = ManUpService('https://example.com/manup.json',
+      MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+        responseJsonString: response,
+      );
+      var service = FireBaseRemoteConfigManUpService(
+          remoteConfig: remoteConfig,
           packageInfoProvider: packageInfo,
-          http: client,
           os: osGetter(),
-          storage: mockFileStorage);
+          storage: mockFileStorage,
+          paramName: '');
 
       var result = await service.validate();
       expect(result, ManUpStatus.latest);
@@ -380,13 +425,18 @@ void main() {
       });
 
       var packageInfo = MockPackageInfo("2.4.1");
-      var response = http.Response('', 500);
-      var client = MockClient((r) => Future.value(response));
-      var service = ManUpService('https://example.com/manup.json',
+      var response = '';
+
+      MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+        responseJsonString: response,
+      );
+      var service = FireBaseRemoteConfigManUpService(
+          remoteConfig: remoteConfig,
           packageInfoProvider: packageInfo,
-          http: client,
           os: osGetter(),
-          storage: mockFileStorage);
+          storage: mockFileStorage,
+          paramName: '');
+
       // pre validation test
       expect(service.configData, null);
 
