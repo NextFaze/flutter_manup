@@ -159,7 +159,6 @@ abstract class ManUpService {
 
   /// call this on dispose.
   void close() {
-    // _client.close();
     this.delegate = null;
   }
 }

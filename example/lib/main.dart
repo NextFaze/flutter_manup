@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
     manUpService = FireBaseRemoteConfigManUpService(
       remoteConfig: FirebaseRemoteConfig.instance,
       // Parameter name (key) in remote config
-      paramName: 'mockManUpConfig',
+      paramName: 'configName',
     );
   }
 
