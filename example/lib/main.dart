@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
+import 'package:manup/manup.dart';
 import 'package:manup/src/firebase_remote_config_man_up_service.dart';
 
 // generated with flutterfire_cli
@@ -25,15 +26,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late FireBaseRemoteConfigManUpService service;
+  late FireBaseRemoteConfigManUpService manUpService;
 
-  String statusStr = 'default';
-  String latestVersion = '';
+  String statusStr = 'unknown';
+  String latestVersion = '-';
 
   @override
   void initState() {
     super.initState();
-    service = FireBaseRemoteConfigManUpService(
+    manUpService = FireBaseRemoteConfigManUpService(
       remoteConfig: FirebaseRemoteConfig.instance,
       // Parameter name (key) in remote config
       paramName: 'mockManUpConfig',
@@ -45,21 +46,27 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'App',
       home: Scaffold(
-        body: Center(
-            child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Status: $statusStr'),
-            Text('Latest version: $latestVersion'),
-          ],
-        )),
+        body: ManUpWidget(
+          service: manUpService,
+          shouldShowAlert: () => true,
+          onComplete: (bool isComplete) => debugPrint('Validate complete'),
+          onError: (dynamic e) => debugPrint('Error: $e'),
+          child: Center(
+              child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Status: $statusStr'),
+              Text('Latest version: $latestVersion'),
+            ],
+          )),
+        ),
         floatingActionButton: FloatingActionButton(
           child: const Text('Validate'),
           onPressed: () {
-            service.validate().then((status) {
+            manUpService.validate().then((status) {
               setState(() {
                 statusStr = status.name;
-                latestVersion = service
+                latestVersion = manUpService
                     .setting(
                       key: 'latest',
                       orElse: '',
