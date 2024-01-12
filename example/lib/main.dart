@@ -25,14 +25,20 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final service = FireBaseRemoteConfigManUpService(
-    remoteConfig: FirebaseRemoteConfig.instance,
-    // Parameter name (key) in remote config
-    paramName: 'mockManUpConfig',
-  );
+  late FireBaseRemoteConfigManUpService service;
 
-  String current = 'default';
-  String setting = '';
+  String statusStr = 'default';
+  String latestVersion = '';
+
+  @override
+  void initState() {
+    super.initState();
+    service = FireBaseRemoteConfigManUpService(
+      remoteConfig: FirebaseRemoteConfig.instance,
+      // Parameter name (key) in remote config
+      paramName: 'mockManUpConfig',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +49,8 @@ class _MyAppState extends State<MyApp> {
             child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Status: $current'),
-            Text('Latest version: $setting'),
+            Text('Status: $statusStr'),
+            Text('Latest version: $latestVersion'),
           ],
         )),
         floatingActionButton: FloatingActionButton(
@@ -52,8 +58,8 @@ class _MyAppState extends State<MyApp> {
           onPressed: () {
             service.validate().then((status) {
               setState(() {
-                current = status.name;
-                setting = service
+                statusStr = status.name;
+                latestVersion = service
                     .setting(
                       key: 'latest',
                       orElse: '',

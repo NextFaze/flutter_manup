@@ -64,7 +64,7 @@ void main() {
             .thenAnswer((_) => Future.value(true));
       });
 
-      test('It fetches and returns metadata', () async {
+      test('It fetches and returns metadata from remote config', () async {
         var response = '''
           {
             "ios": {
