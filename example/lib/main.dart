@@ -4,16 +4,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:manup/manup.dart';
-import 'package:manup/src/firebase_remote_config_man_up_service.dart';
-
-// generated with flutterfire_cli
-import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+      // You can get DefaultFirebaseOptions from the generated file(firebase_options.dart)
+      // from flutterfire_cli
+
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
 
   runApp(const MyApp());
 }
