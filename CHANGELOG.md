@@ -1,5 +1,9 @@
 # manUp
 
+## [8.0.0]
+
+- Update `package_info_plus` from v4 to v6
+
 ## [7.0.0]
 
 - **Breaking change** Separate service into `HttpManUpService` and `FireBaseRemoteConfigManUpService`
