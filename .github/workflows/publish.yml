@@ -13,25 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - uses: subosito/flutter-action@v1
-      with:
-        channel: 'stable'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
 
-    - uses: dart-lang/setup-dart@v1
+      - uses: dart-lang/setup-dart@v1
 
-    - name: 'Fetch packages'
-      run: dart pub get
+      - name: 'Fetch packages'
+        run: dart pub get
 
-    - name: Build generated files
-      run: dart run build_runner build --delete-conflicting-outputs
+      - name: Build generated files
+        run: dart run build_runner build --delete-conflicting-outputs
 
-    - name: 'Analyze project'
-      run: flutter analyze
-      
-    - name: 'Run tests'
-      run: flutter test
+      - name: 'Analyze project'
+        run: flutter analyze
 
-    - name: 'Publish'
-      run: dart pub publish --force
+      - name: 'Run tests'
+        run: flutter test
+
+      - name: 'Publish'
+        run: dart pub publish --force
