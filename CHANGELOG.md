@@ -1,5 +1,9 @@
 # manUp
 
+## [9.0.0]
+
+- Support `package_info_plus` up to version 10 (relax version requirements)
+
 ## [8.0.0]
 
 - Update `package_info_plus` from v4 to v6
