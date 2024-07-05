@@ -1,5 +1,9 @@
 # manUp
 
+## [9.0.1]
+
+- Relax version requirements for firebase
+
 ## [9.0.0]
 
 - Support `package_info_plus` up to version 10 (relax version requirements)
