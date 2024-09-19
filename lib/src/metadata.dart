@@ -85,12 +85,12 @@ extension MetaDataMessages on Metadata {
   String get unsupportedMessage => setting<String>(
         key: 'unsupportedMessage',
         orElse:
-            'This version is no longer supported. Please update to the latest version',
+            'This version is no longer supported. Please update to the latest version.',
       );
   // maintenance mode
   String get disabledMessage => setting<String>(
         key: 'disabledMessage',
         orElse:
-            'The app is currently in maintenance, please check again shortly',
+            'The app is currently in maintenance, please check again shortly.',
       );
 }

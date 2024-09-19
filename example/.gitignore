@@ -49,3 +49,4 @@ windows/
 web/
 linux/
 firebase_options.dart
+.metadata

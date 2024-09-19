@@ -1,16 +1,22 @@
 part of manup;
 
-abstract class ManUpService {
+abstract class ManUpService with ChangeNotifier {
   final PackageInfoProvider packageInfoProvider;
 
   final ConfigStorage fileStorage;
 
   final String? os;
+
+  bool closed = false;
+
   Metadata _manUpData = Metadata();
 
   PlatformData? get configData =>
       os != null ? this.getPlatformData(os!, _manUpData) : null;
   ManUpDelegate? delegate;
+
+  /// The most recent status - use [addListener] to get notified of changes
+  ManUpStatus? status;
 
   ManUpService({
     this.packageInfoProvider = const DefaultPackageInfoProvider(),
@@ -29,32 +35,33 @@ abstract class ManUpService {
       this._handleManUpStatus(status);
       return status;
     } catch (e) {
-      throw e;
+      rethrow;
     } finally {
       await _storeManUpFile();
     }
   }
 
   Future<ManUpStatus> _validate([Metadata? metadata]) async {
-    PackageInfo info = await this.packageInfoProvider.getInfo();
-    metadata ??= await this.getMetadata();
-    _manUpData = metadata;
-    PlatformData? platformData = configData;
-
-    if (platformData == null) {
-      return ManUpStatus.latest;
-    }
-    if (!platformData.enabled) {
-      return ManUpStatus.disabled;
-    }
-
     try {
+      PackageInfo info = await this.packageInfoProvider.getInfo();
+      metadata ??= await this.getMetadata();
+      _manUpData = metadata;
+      PlatformData? platformData = configData;
+
+      if (platformData == null) {
+        return ManUpStatus.latest;
+      }
+      if (!platformData.enabled) {
+        return ManUpStatus.disabled;
+      }
+
       Version currentVersion = Version.parse(info.version);
       VersionConstraint latestVersion =
           VersionConstraint.parse('>=${platformData.latestVersion}');
       VersionConstraint minVersion =
           VersionConstraint.parse('>=${platformData.minVersion}');
-      if (latestVersion.allows(currentVersion)) {
+      if (latestVersion.allows(currentVersion) &&
+          minVersion.allows(currentVersion)) {
         return ManUpStatus.latest;
       } else if (minVersion.allows(currentVersion)) {
         return ManUpStatus.supported;
@@ -106,9 +113,13 @@ abstract class ManUpService {
   Future<Metadata> getMetadata();
 
   // manUp status validation
-  void _handleManUpStatus(ManUpStatus status) {
-    this.delegate?.manUpStatusChanged(status);
-    switch (status) {
+  void _handleManUpStatus(ManUpStatus newStatus) {
+    if (closed) return;
+
+    status = newStatus;
+    notifyListeners();
+    this.delegate?.manUpStatusChanged(newStatus);
+    switch (newStatus) {
       case ManUpStatus.supported:
         this.delegate?.manUpUpdateAvailable();
         break;
@@ -136,7 +147,6 @@ abstract class ManUpService {
     }
   }
 
-  /// manUp file storage
   Future<void> _storeManUpFile() async {
     if (kIsWeb) return;
     try {
@@ -157,8 +167,9 @@ abstract class ManUpService {
     return Metadata(data: json);
   }
 
-  /// call this on dispose.
   void close() {
+    closed = true;
+    // Stop emitting further events to the delegate (if it exists)
     this.delegate = null;
   }
 }

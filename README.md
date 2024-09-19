@@ -1,6 +1,10 @@
-# Manup
+# ManUp
+
+*Man*datory *Up*dates for Flutter
 
 [![pub package](https://img.shields.io/pub/v/manup.svg)](https://pub.dartlang.org/packages/manup) [![Build Status](https://travis-ci.org/NextFaze/flutter_manup.svg?branch=master)](https://travis-ci.org/NextFaze/flutter_manup) [![Coverage Status](https://coveralls.io/repos/github/NextFaze/flutter_manup/badge.svg?branch=master)](https://coveralls.io/github/NextFaze/flutter_manup?branch=master)
+
+![image](./example.gif)
 
 Sometimes you have an app which talks to services in the cloud. Sometimes,
 those services change, and your app no longer works. Wouldn't it be great if

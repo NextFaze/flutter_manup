@@ -1,7 +1,7 @@
 part of manup;
 
 class ManUpAppDialog {
-  Future<bool?> showAlertDialog(
+  static Future<bool?> showAlertDialog(
       {String? message,
       String trueText = "OK",
       String? falseText,
@@ -13,7 +13,8 @@ class ManUpAppDialog {
         context: context,
         builder: (BuildContext context) {
           return PopScope(
-            onPopInvoked: (didPop) => Future.value(barrierDismissible),
+            onPopInvokedWithResult: (didPop, result) =>
+                Future.value(barrierDismissible),
             child: AlertDialog(
               title: Text(message ?? ""),
               actions: <Widget>[
