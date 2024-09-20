@@ -1,5 +1,9 @@
 # manUp
 
+## [9.2.1]
+
+- Add missing `barrierDismissible` to required default dialogs
+
 ## [9.2.0]
 
 - Add a new `error` ManUpStatus that can be handled via the `ManUpService` `ChangeNotifier`
@@ -9,7 +13,7 @@
 - `ManUpService` now implements `ChangeNotifier` and the most recent status can be retrieved from the `status` getter
 - `onComplete`, `onError` and `shouldShowAlert` on `ManUpWidget` are now optional (`shouldShowAlert` defaults to `() => true`)
 - `ManUpWidget` now exposes an optional `onStatusChanged`
-- "Kill switch" (`disabled`) and required update alert dialogs are no longer barrier dismissable.
+- "Kill switch" (`disabled`) and required update alert dialogs are no longer barrier dismissible.
 - Changes to status will now show updated dialogs
 - Update examples
 

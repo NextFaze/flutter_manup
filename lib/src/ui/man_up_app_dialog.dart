@@ -43,6 +43,7 @@ class ManUpAppDialog {
         return Future.value(true);
       case ManUpStatus.supported:
         final confirmed = await ManUpAppDialog.showAlertDialog(
+          barrierDismissible: true,
           context: context,
           message: message,
           trueText: "Update",
@@ -89,6 +90,7 @@ class ManUpAppDialog {
     bool hasCancelText = falseText != null && falseText.isNotEmpty;
     final route = DialogRoute<bool?>(
         context: context,
+        barrierDismissible: barrierDismissible,
         builder: (context) {
           return PopScope(
             onPopInvokedWithResult: (didPop, result) =>
