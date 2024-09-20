@@ -196,7 +196,9 @@ void main() {
             storage: mockFileStorage);
         var result = await service.validate();
         expect(result, ManUpStatus.unsupported);
+        expect(service.status, ManUpStatus.unsupported);
       });
+
       test('the minimum version version', () async {
         var packageInfo = MockPackageInfo("2.1.0");
         var client;
@@ -225,7 +227,9 @@ void main() {
 
         var result = await service.validate();
         expect(result, ManUpStatus.supported);
+        expect(service.status, ManUpStatus.supported);
       });
+
       test('some supported version', () async {
         var packageInfo = MockPackageInfo("2.3.3");
         var client;
@@ -248,7 +252,9 @@ void main() {
 
         var result = await service.validate();
         expect(result, ManUpStatus.supported);
+        expect(service.status, ManUpStatus.supported);
       });
+
       test('the latest version', () async {
         var packageInfo = MockPackageInfo("2.4.1");
         var response = http.Response('''
@@ -269,7 +275,9 @@ void main() {
             storage: mockFileStorage);
         var result = await service.validate();
         expect(result, ManUpStatus.latest);
+        expect(service.status, ManUpStatus.latest);
       });
+
       test('allow greater than latest version', () async {
         var packageInfo = MockPackageInfo("3.4.1");
         var response = http.Response('''
@@ -290,7 +298,9 @@ void main() {
             storage: mockFileStorage);
         var result = await service.validate();
         expect(result, ManUpStatus.latest);
+        expect(service.status, ManUpStatus.latest);
       });
+
       test('marked as disabled', () async {
         var packageInfo = MockPackageInfo("2.4.1");
         var response = http.Response('''
@@ -312,7 +322,26 @@ void main() {
             storage: mockFileStorage);
         var result = await service.validate();
         expect(result, ManUpStatus.disabled);
+        expect(service.status, ManUpStatus.disabled);
       });
+
+      test('error status', () async {
+        var packageInfo = MockPackageInfo("1.1.0");
+        final error = Error();
+        var client;
+        client = MockClient((r) => Future.error(error));
+        var service = HttpManUpService('https://example.com/manup.json',
+            packageInfoProvider: packageInfo,
+            http: client,
+            os: osGetter(),
+            storage: mockFileStorage);
+        var result = await service.validate().catchError((error) {
+          return ManUpStatus.error;
+        });
+        expect(result, ManUpStatus.error);
+        expect(service.status, ManUpStatus.error);
+      });
+
       test('throws an exception if the lookup failed', () async {
         var packageInfo = MockPackageInfo("2.4.1");
         var client = MockClient((r) => Future.error(Exception("text error")));
