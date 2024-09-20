@@ -7,43 +7,23 @@ mixin DialogMixin<T extends StatefulWidget> on State<T> {
         canLaunch ? launchUrl(Uri.parse(uri)) : Future.value(canLaunch));
   }
 
+  /// Show an appropriate dialog for the given [ManUpStatus]. Can be overridden to show custom dialogs.
   Future<bool> showManUpDialog(
     ManUpStatus status,
     String? message,
     String? updateUrl,
   ) async {
-    switch (status) {
-      case ManUpStatus.latest:
-        return Future.value(true);
-      case ManUpStatus.supported:
-        return ManUpAppDialog.showAlertDialog(
-                context: context,
-                message: message,
-                trueText: "Update",
-                falseText: "Later")
-            .then((shouldUpdate) =>
-                shouldUpdate == true ? _launchUrl(updateUrl!) : false)
-            .then((isLaunched) => !(isLaunched as bool));
-      case ManUpStatus.unsupported:
-        return ManUpAppDialog.showAlertDialog(
-                barrierDismissible: false,
-                context: context,
-                message: message,
-                trueText: "Update")
-            .then((shouldLaunch) {
-          if (shouldLaunch == true) {
-            _launchUrl(updateUrl!);
-          }
-        }).then((_) => false);
-
-      case ManUpStatus.disabled:
-        return ManUpAppDialog.showAlertDialog(
-                barrierDismissible: false, context: context, message: message)
-            .then((shouldClose) {
-          if (shouldClose == true) {
-            exit(0);
-          }
-        }).then(((_) => false));
-    }
+    ManUpAppDialog.clearActiveDialogs(context);
+    return ManUpAppDialog.showDialogForStatus(
+      status: status,
+      context: context,
+      message: message,
+      onUpdateConfirmed: (url) {
+        _launchUrl(updateUrl!);
+      },
+      onDisabledConfirmed: () {
+        exit(0);
+      },
+    );
   }
 }
