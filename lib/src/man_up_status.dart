@@ -2,6 +2,9 @@ part of manup;
 
 /// Possible ManUp Status
 enum ManUpStatus {
+  /// There was a problem fetching or validating the config file
+  error,
+
   /// This is the latest version available (current version >= latestVersion)
   latest,
 

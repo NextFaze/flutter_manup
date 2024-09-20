@@ -35,6 +35,7 @@ abstract class ManUpService with ChangeNotifier {
       this._handleManUpStatus(status);
       return status;
     } catch (e) {
+      this._handleManUpStatus(ManUpStatus.error);
       rethrow;
     } finally {
       await _storeManUpFile();
@@ -143,6 +144,7 @@ abstract class ManUpService with ChangeNotifier {
       case ManUpStatus.disabled:
         return _manUpData.disabledMessage;
       case ManUpStatus.latest:
+      case ManUpStatus.error:
         return "";
     }
   }

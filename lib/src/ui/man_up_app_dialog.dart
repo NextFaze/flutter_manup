@@ -37,6 +37,10 @@ class ManUpAppDialog {
     switch (status) {
       case ManUpStatus.latest:
         return Future.value(true);
+      case ManUpStatus.error:
+        // Default configuration is to not prevent the user from using the app
+        // in the event of connectivity issues etc.
+        return Future.value(true);
       case ManUpStatus.supported:
         final confirmed = await ManUpAppDialog.showAlertDialog(
           context: context,

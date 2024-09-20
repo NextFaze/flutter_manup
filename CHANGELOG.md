@@ -1,5 +1,9 @@
 # manUp
 
+## [9.2.0]
+
+- Add a new `error` ManUpStatus that can be handled via the `ManUpService` `ChangeNotifier`
+
 ## [9.1.0]
 
 - `ManUpService` now implements `ChangeNotifier` and the most recent status can be retrieved from the `status` getter
