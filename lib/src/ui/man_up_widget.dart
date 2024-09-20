@@ -3,18 +3,20 @@ part of manup;
 class ManUpWidget extends StatefulWidget {
   final ManUpService service;
   final Widget child;
-  final bool Function() shouldShowAlert;
-  final void Function(bool) onComplete;
-  final void Function(dynamic) onError;
+  final bool Function()? shouldShowAlert;
+  final void Function(bool)? onComplete;
+  final void Function(dynamic e)? onError;
+  final void Function(ManUpStatus status)? onStatusChanged;
 
-  ManUpWidget(
-      {Key? key,
-      required this.child,
-      required this.service,
-      required this.shouldShowAlert,
-      required this.onComplete,
-      required this.onError})
-      : super(key: key);
+  ManUpWidget({
+    Key? key,
+    required this.child,
+    required this.service,
+    this.shouldShowAlert,
+    this.onComplete,
+    this.onError,
+    this.onStatusChanged,
+  }) : super(key: key);
 
   @override
   _ManUpWidgetState createState() => _ManUpWidgetState();
@@ -26,7 +28,7 @@ class _ManUpWidgetState extends State<ManUpWidget>
         ManUpDelegateMixin,
         DialogMixin,
         WidgetsBindingObserver {
-  bool isShowingManUpAlert = false;
+  ManUpStatus? alertDialogType;
 
   @override
   void initState() {
@@ -43,32 +45,46 @@ class _ManUpWidgetState extends State<ManUpWidget>
     try {
       await widget.service.validate();
     } catch (error) {
-      widget.onError(error);
+      widget.onError?.call(error);
     }
   }
 
-  bool get shouldShowManUpAlert => this.widget.shouldShowAlert.call();
+  bool get shouldShowManUpAlert => this.widget.shouldShowAlert?.call() ?? true;
 
   @override
   void manUpStatusChanged(ManUpStatus status) {
-    if (status == ManUpStatus.latest) {
-      this.widget.onComplete.call(true);
+    widget.onStatusChanged?.call(status);
+
+    // Already showing a dialog for this status - nothing to do
+    if (alertDialogType == status) {
       return;
     }
+    // Showing an alert dialog for a different status - close it to show the new status
+    if (alertDialogType != null) {
+      Navigator.of(context, rootNavigator: true).pop();
+      alertDialogType = null;
+    }
+
+    if (status == ManUpStatus.latest) {
+      this.widget.onComplete?.call(true);
+      return;
+    }
+
     final updateUrl = widget.service.configData?.updateUrl;
     if (this.shouldShowManUpAlert) {
       final message = widget.service.getMessage(forStatus: status);
-      isShowingManUpAlert = true;
-      showManUpDialog(status, message, updateUrl)
-          .then((isUpdateLater) =>
-              isUpdateLater ? this.widget.onComplete.call(true) : isUpdateLater)
-          .then((_) => isShowingManUpAlert = false);
+      alertDialogType = status;
+      showManUpDialog(status, message, updateUrl).then((isUpdateLater) {
+        alertDialogType = null;
+        if (isUpdateLater) this.widget.onComplete?.call(true);
+        return false;
+      });
     }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!isShowingManUpAlert && state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed) {
       validateManUp();
     }
   }

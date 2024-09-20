@@ -22,3 +22,7 @@ test/firebase_remote_config_man_up_service_test.mocks.dart
 .pub-cache/
 .pub/
 /build/
+
+
+example/ios
+example/android

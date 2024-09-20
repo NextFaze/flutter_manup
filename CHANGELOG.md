@@ -1,5 +1,14 @@
 # manUp
 
+## [9.1.0]
+
+- `ManUpService` now implements `ChangeNotifier` and the most recent status can be retrieved from the `status` getter
+- `onComplete`, `onError` and `shouldShowAlert` on `ManUpWidget` are now optional (`shouldShowAlert` defaults to `() => true`)
+- `ManUpWidget` now exposes an optional `onStatusChanged`
+- "Kill switch" (`disabled`) and required update alert dialogs are no longer barrier dismissable.
+- Changes to status will now show updated dialogs
+- Update examples
+
 ## [9.0.1]
 
 - Relax version requirements for firebase
