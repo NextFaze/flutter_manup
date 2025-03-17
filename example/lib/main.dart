@@ -20,11 +20,17 @@ class ExampleApp extends StatelessWidget {
         // your own [ManUpService]
         service: HttpManUpService('https://example.com/my_config.json',
             http: Client()),
-        child: const Text('My App'),
+        child: const Scaffold(body: Center(child: Text('My App'))),
         // Optionals
-        onComplete: (_) {},
-        onError: (_) {},
-        onStatusChanged: (status) {},
+        onComplete: (_) {
+          debugPrint('ManUp validation complete');
+        },
+        onError: (_) {
+          debugPrint('ManUp validation error');
+        },
+        onStatusChanged: (status) {
+          debugPrint('ManUp status is "$status"');
+        },
         shouldShowAlert: () => true,
       ),
     );

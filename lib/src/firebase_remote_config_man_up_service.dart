@@ -3,8 +3,6 @@ part of manup;
 class FireBaseRemoteConfigManUpService extends ManUpService {
   final FirebaseRemoteConfig remoteConfig;
   late StreamSubscription remoteConfigSubscription;
-  final PackageInfoProvider packageInfoProvider;
-  final String? os;
   final String paramName;
 
   ManUpDelegate? delegate;
@@ -12,8 +10,9 @@ class FireBaseRemoteConfigManUpService extends ManUpService {
   FireBaseRemoteConfigManUpService({
     required this.remoteConfig,
     required this.paramName,
-    this.os,
-    this.packageInfoProvider = const DefaultPackageInfoProvider(),
+    String? os,
+    PackageInfoProvider packageInfoProvider =
+        const DefaultPackageInfoProvider(),
     ConfigStorage storage = const ConfigStorage(),
     this.delegate,
   }) : super(

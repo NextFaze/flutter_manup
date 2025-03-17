@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -40,6 +41,18 @@ class MockPackageInfo extends PackageInfoProvider {
 void main() {
   group('HttpManUpService', () {
     final mockFileStorage = Mocks.MockConfigStorage();
+
+    test('correctly detects platform by default', () {
+      var packageInfo = MockPackageInfo("3.4.1");
+
+      final client = MockClient((r) => Future.error(Exception('Test error')));
+      final service = HttpManUpService('https://example.com/manup.json',
+          packageInfoProvider: packageInfo,
+          http: client,
+          storage: mockFileStorage);
+
+      expect(service.os, Platform.operatingSystem);
+    });
 
     test('parseJson converts to a PlatformData object', () {
       Map<String, dynamic> json = jsonDecode('''

@@ -2,19 +2,16 @@ part of manup;
 
 class HttpManUpService extends ManUpService {
   final String url;
-  final PackageInfoProvider packageInfoProvider;
   final Client http;
-  final String? os;
-
-  ManUpDelegate? delegate;
 
   HttpManUpService(
     this.url, {
     required this.http,
-    this.os,
-    this.packageInfoProvider = const DefaultPackageInfoProvider(),
+    String? os,
+    PackageInfoProvider packageInfoProvider =
+        const DefaultPackageInfoProvider(),
     ConfigStorage storage = const ConfigStorage(),
-    this.delegate,
+    ManUpDelegate? delegate,
   }) : super(
           delegate: delegate,
           os: os,

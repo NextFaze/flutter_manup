@@ -1,5 +1,9 @@
 # manUp
 
+## [9.2.2]
+
+- Fix an issue that would prevent os from detecting correctly
+
 ## [9.2.1]
 
 - Add missing `barrierDismissible` to required default dialogs
