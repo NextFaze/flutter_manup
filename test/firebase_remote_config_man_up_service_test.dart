@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:manup/manup.dart';
@@ -39,6 +40,37 @@ class MockPackageInfo extends PackageInfoProvider {
 void main() {
   group('FireBaseRemoteConfigManUpService', () {
     final mockFileStorage = Mocks.MockConfigStorage();
+
+    test('correctly detects platform by default', () {
+      var response = '''
+          {
+            "ios": {
+              "latest": "2.4.1",
+              "minimum": "2.1.0",
+              "url": "http://example.com/myAppUpdate",
+              "enabled": true
+            },
+            "android": {
+              "latest": "2.5.1",
+              "minimum": "1.9.0",
+              "url": "http://example.com/myAppUpdate/android",
+              "enabled": false 
+            }
+          }
+          ''';
+      var packageInfo = MockPackageInfo("3.4.1");
+
+      MockFirebaseRemoteConfig remoteConfig = MockFirebaseRemoteConfig(
+        responseJsonString: response,
+      );
+      final service = FireBaseRemoteConfigManUpService(
+          remoteConfig: remoteConfig,
+          packageInfoProvider: packageInfo,
+          storage: mockFileStorage,
+          paramName: '');
+
+      expect(service.os, Platform.operatingSystem);
+    });
 
     test('parseJson converts to a PlatformData object', () {
       Map<String, dynamic> json = jsonDecode('''
