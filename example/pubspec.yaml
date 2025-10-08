@@ -32,13 +32,13 @@ dependencies:
     sdk: flutter
   manup:
     path: ../
-  firebase_analytics: ^10.8.0
-  firebase_remote_config: ^4.3.8
+  firebase_core: ^4.1.0
+  firebase_analytics: ^12.0.0
+  firebase_remote_config: ^6.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  firebase_core: ^2.24.2
   package_info_plus: ^8.0.2
   http: ^1.2.2
 

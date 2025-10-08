@@ -1,5 +1,9 @@
 # manUp
 
+## [9.3.0]
+
+- Support `firebase_remote_config` v6 and `firebase_analytics` v12
+
 ## [9.2.2]
 
 - Fix an issue that would prevent os from detecting correctly
