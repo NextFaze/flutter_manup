@@ -8,6 +8,12 @@ class ManUpWidget extends StatefulWidget {
   final void Function(dynamic e)? onError;
   final void Function(ManUpStatus status)? onStatusChanged;
 
+  /// After the app has been backgrounded for this duration, check for updates again.
+  final Duration checkAfterBackgroundDuration;
+
+  @visibleForTesting
+  final DateTime Function() now;
+
   ManUpWidget({
     Key? key,
     required this.child,
@@ -16,7 +22,10 @@ class ManUpWidget extends StatefulWidget {
     this.onComplete,
     this.onError,
     this.onStatusChanged,
-  }) : super(key: key);
+    this.checkAfterBackgroundDuration = Duration.zero,
+    @visibleForTesting DateTime Function()? now,
+  })  : now = now ?? DateTime.now,
+        super(key: key);
 
   @override
   _ManUpWidgetState createState() => _ManUpWidgetState();
@@ -29,6 +38,8 @@ class _ManUpWidgetState extends State<ManUpWidget>
         DialogMixin,
         WidgetsBindingObserver {
   ManUpStatus? alertDialogType;
+
+  DateTime? pausedAt;
 
   @override
   void initState() {
@@ -85,7 +96,14 @@ class _ManUpWidgetState extends State<ManUpWidget>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      validateManUp();
+      final inBackgroundFor =
+          pausedAt?.difference(widget.now()).abs() ?? Duration.zero;
+      if (inBackgroundFor >= widget.checkAfterBackgroundDuration) {
+        validateManUp();
+      }
+      pausedAt = null;
+    } else if (state == AppLifecycleState.paused) {
+      pausedAt = widget.now();
     }
   }
 

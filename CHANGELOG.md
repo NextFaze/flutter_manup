@@ -1,5 +1,9 @@
 # manUp
 
+## [9.4.0]
+
+- Allow custom background duration check timeout
+
 ## [9.3.2]
 
 - Launch url in external browser
