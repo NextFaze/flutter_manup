@@ -7,7 +7,10 @@ void main() {
   const os = 'ios';
 
   Future<MockManUpService> buildTestCase(WidgetTester tester,
-      {Metadata? metadata, String? version}) async {
+      {Metadata? metadata,
+      String? version,
+      Duration checkAfterBackgroundDuration = Duration.zero,
+      DateTime Function()? now}) async {
     final manUpService = MockManUpService(
         os: os,
         packageInfoProvider:
@@ -17,7 +20,12 @@ void main() {
       manUpService.metadata = metadata;
     }
     await tester.pumpWidget(MaterialApp(
-      home: ManUpWidget(child: Container(), service: manUpService),
+      home: ManUpWidget(
+        child: Container(),
+        service: manUpService,
+        checkAfterBackgroundDuration: checkAfterBackgroundDuration,
+        now: now,
+      ),
     ));
     return manUpService;
   }
@@ -122,6 +130,77 @@ void main() {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pumpAndSettle();
 
+    expect(service.validateCallCount, 2);
+    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(
+        find.text(
+            'The app is currently in maintenance, please check again shortly.'),
+        findsOneWidget);
+  });
+
+  testWidgets(
+      'skips resume re-check when background duration is below custom threshold',
+      (tester) async {
+    var now = DateTime(2020, 1, 1, 0, 0, 0);
+    final service = await buildTestCase(
+      tester,
+      checkAfterBackgroundDuration: Duration(minutes: 5),
+      now: () => now,
+    );
+
+    await tester.pumpAndSettle();
+    expect(service.validateCallCount, 1);
+    expect(find.byType(AlertDialog), findsNothing);
+
+    service.metadata = Metadata(data: {
+      os: {
+        "latest": "2.4.1",
+        "minimum": "2.1.0",
+        "url": "http://example.com/myAppUpdate",
+        "enabled": false
+      },
+    });
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pumpAndSettle();
+    now = now.add(Duration(minutes: 4));
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+
+    expect(service.validateCallCount, 1);
+    expect(find.byType(AlertDialog), findsNothing);
+  });
+
+  testWidgets(
+      're-checks on resume when background duration meets custom threshold',
+      (tester) async {
+    var now = DateTime(2020, 1, 1, 0, 0, 0);
+    final service = await buildTestCase(
+      tester,
+      checkAfterBackgroundDuration: Duration(minutes: 5),
+      now: () => now,
+    );
+
+    await tester.pumpAndSettle();
+    expect(service.validateCallCount, 1);
+    expect(find.byType(AlertDialog), findsNothing);
+
+    service.metadata = Metadata(data: {
+      os: {
+        "latest": "2.4.1",
+        "minimum": "2.1.0",
+        "url": "http://example.com/myAppUpdate",
+        "enabled": false
+      },
+    });
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pumpAndSettle();
+    now = now.add(Duration(minutes: 6));
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+
+    expect(service.validateCallCount, 2);
     expect(find.byType(AlertDialog), findsOneWidget);
     expect(
         find.text(
@@ -188,6 +267,13 @@ class MockManUpService extends ManUpService {
   MockManUpService({super.os, super.packageInfoProvider});
 
   Metadata metadata = Metadata(data: {});
+  int validateCallCount = 0;
+
+  @override
+  Future<ManUpStatus> validate([Metadata? metadata]) {
+    validateCallCount += 1;
+    return super.validate(metadata);
+  }
 
   @override
   Future<Metadata> getMetadata() async => metadata;

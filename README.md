@@ -129,6 +129,7 @@ Wrap your widget with `ManUpWidget` to automatically handle every thing.
           shouldShowAlert: () => true,
           onComplete: (bool isComplete) => print(isComplete),
           onError: (dynamic e) => print(e.toString()),
+          checkAfterBackgroundDuration: Duration(minutes: 5), // Optional, only re-check after the app has been in the background for a certain time
           child: Container()),
     );
   }
