@@ -1,5 +1,9 @@
 # manUp
 
+## [9.3.1]
+
+- Fix update url not being passed to dialog callback
+
 ## [9.3.0]
 
 - Support `firebase_remote_config` v6 and `firebase_analytics` v12

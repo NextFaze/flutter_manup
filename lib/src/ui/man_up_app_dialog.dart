@@ -50,8 +50,8 @@ class ManUpAppDialog {
           falseText: "Later",
         );
 
-        if (confirmed == true) {
-          onUpdateConfirmed(updateUrl!);
+        if (confirmed == true && updateUrl != null) {
+          onUpdateConfirmed(updateUrl);
         }
         return confirmed ?? false;
       case ManUpStatus.unsupported:
