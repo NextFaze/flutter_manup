@@ -1,5 +1,9 @@
 # manUp
 
+## [9.3.2]
+
+- Launch url in external browser
+
 ## [9.3.1]
 
 - Fix update url not being passed to dialog callback

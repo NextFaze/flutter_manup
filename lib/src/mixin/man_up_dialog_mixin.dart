@@ -3,8 +3,9 @@ part of manup;
 /// Show app dialog based on manUp status
 mixin DialogMixin<T extends StatefulWidget> on State<T> {
   Future<bool> _launchUrl(String uri) {
-    return canLaunchUrl(Uri.parse(uri)).then((canLaunch) =>
-        canLaunch ? launchUrl(Uri.parse(uri)) : Future.value(canLaunch));
+    return canLaunchUrl(Uri.parse(uri)).then((canLaunch) => canLaunch
+        ? launchUrl(Uri.parse(uri), mode: LaunchMode.externalApplication)
+        : Future.value(canLaunch));
   }
 
   /// Show an appropriate dialog for the given [ManUpStatus]. Can be overridden to show custom dialogs.
