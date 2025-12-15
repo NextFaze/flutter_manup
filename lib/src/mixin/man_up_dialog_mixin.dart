@@ -18,6 +18,7 @@ mixin DialogMixin<T extends StatefulWidget> on State<T> {
       status: status,
       context: context,
       message: message,
+      updateUrl: updateUrl,
       onUpdateConfirmed: (url) {
         _launchUrl(updateUrl!);
       },
