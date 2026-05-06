@@ -1,5 +1,9 @@
 # manUp
 
+## [9.4.1]
+
+- Support `package_info_plus` versions up to v11
+
 ## [9.4.0]
 
 - Allow custom background duration check timeout
@@ -52,7 +56,6 @@
 ## [7.0.0]
 
 - **Breaking change** Separate service into `HttpManUpService` and `FireBaseRemoteConfigManUpService`
-
   - Extract `HttpManUpService` from `ManUpService` and create `FireBaseRemoteConfigManUpService` to support fetching app config with HTTP and Firebase remote config
   - Now, the user who use `ManUpService` in previous release
 
