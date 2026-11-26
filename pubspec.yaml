@@ -1,6 +1,6 @@
 name: manup
 description: Mandatory update for Flutter Apps that prompts or forces app update by querying a hosted JSON file.
-version: 9.4.1
+version: 10.0.0
 homepage: https://github.com/NextFaze/flutter_manup
 
 environment:
@@ -15,8 +15,9 @@ dependencies:
   meta: ^1.8.0
   url_launcher: ^6.1.6
   path_provider: ^2.0.11
-  firebase_remote_config: '>=4.3.8 <=7.0.0'
-  firebase_analytics: '>=10.0.0 <=13.0.0'
+  firebase_remote_config: '>=4.3.8 <8.0.0'
+  firebase_analytics: '>=10.0.0 <14.0.0'
+  material_ui: ^1.11.1
 
 dev_dependencies:
   flutter_test:

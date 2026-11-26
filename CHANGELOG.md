@@ -1,5 +1,9 @@
 # manUp
 
+## [9.4.2]
+
+- Support `firebase_remote_config` up to <8.0.0 and `firebase_analytics` up to <14.0.0 (fixes resolution with Firebase iOS SDK 13.1.1)
+
 ## [9.4.1]
 
 - Support `package_info_plus` versions up to v11
