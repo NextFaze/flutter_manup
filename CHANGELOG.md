@@ -1,5 +1,10 @@
 # manUp
 
+## [10.0.0]
+
+- Bump `firebase_remote_config: '>=4.3.8 <8.0.0'` and `firebase_analytics: '>=10.0.0 <14.0.0'`
+- Replace `material` to `material_ui`
+
 ## [9.4.2]
 
 - Support `firebase_remote_config` up to <8.0.0 and `firebase_analytics` up to <14.0.0 (fixes resolution with Firebase iOS SDK 13.1.1)
